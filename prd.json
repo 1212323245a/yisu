@@ -1,0 +1,389 @@
+{
+  "meta": {
+    "project": "third-workbench-review-loop",
+    "version": "2026-04-15-v4",
+    "status": "ready_for_claude_execution",
+    "owner": "Codex",
+    "handoff_style": "ralph",
+    "language": "zh-CN"
+  },
+  "role_definition": {
+    "nextAgentRole": "narrow-scope executor",
+    "reviewerRole": "Codex is direction-checker and acceptance reviewer",
+    "roleReminder": [
+      "Claude 这轮不是方向制定者，只负责按当前 PRD 做窄范围执行。",
+      "Claude 不要把这轮 UI 和占位流程说成真实问题库闭环已经完成。",
+      "Claude 这轮只允许做第三工作台结构收口、字段收口、流程门占位和 AI 接入口占位。"
+    ]
+  },
+  "collaboration_pattern": {
+    "currentRoundGoal": "把第三工作台正式收口为左选中操右辅的三栏复盘台，并把客户数据、问题复盘库、关联规则、状态门流转定成冻结版本。",
+    "workSplit": [
+      "Codex 负责方向冻结、业务边界、数据模型、任务拆解和验收口径。",
+      "Claude 负责按 story 调整第三工作台 UI 和占位结构。",
+      "Claude 每做完一个 story 先自检，再交由 Codex 审阅。"
+    ]
+  },
+  "real_project_paths": {
+    "realCodeRoot": "D:\\codex-program\\codex-sale-data\\客户线索库\\\\.obsidian\\plugins\\sales-workbench-prototype",
+    "opsViewFile": "D:\\codex-program\\codex-sale-data\\客户线索库\\\\.obsidian\\plugins\\sales-workbench-prototype\\src\\components\\ops\\OpsWorkbenchView.ts",
+    "opsTypeFile": "D:\\codex-program\\codex-sale-data\\客户线索库\\\\.obsidian\\plugins\\sales-workbench-prototype\\src\\types\\ops.ts",
+    "handoffRuleRoot": "F:\\codex交接项目 - 副本\\03-渐进规则"
+  },
+  "must_read_rule_docs": [
+    "D:\\codex-program\\codex-sale-data\\AGENTS.md",
+    "D:\\codex-program\\codex-sale-data\\项目总方向.md",
+    "D:\\codex-program\\codex-sale-data\\当前进度.md",
+    "D:\\codex-program\\codex-sale-data\\任务清单\\当前任务清单.md"
+  ],
+  "business_direction": {
+    "frozenDirection": [
+      "第三工作台不再按单个客户异常整改台理解，而是经营复盘与策略纠偏台。",
+      "页面固定为三栏结构：左侧选择区、中间操作区、右侧辅助区。",
+      "左侧负责选择当前主线和当前对象，中间负责展示主数据和主判断，右侧负责问题闭环辅助。",
+      "客户数据和问题复盘库不能合并存储，只能独立存放后通过关联层连接。",
+      "客户在第三工作台里是样本和证据，不是这套复盘系统的主对象。",
+      "第三工作台的右侧必须是问题驱动顺序，而不是随意堆建议卡片。",
+      "这套台子的目标是积累问题、积累误判、积累试错和验证结果，供后续 AI 继续检索与给建议。"
+    ],
+    "uiRoundBoundary": [
+      "这一轮先收口 UI、字段、流程顺序和状态门，不承诺真实数据库闭环已打通。",
+      "这一轮不新增真实数据接线，不做真实写库实现。",
+      "这一轮不扩展到第一、第二工作台。",
+      "这一轮不做规则编辑器，不做 BI 大屏。"
+    ]
+  },
+  "current_code_state_summary": {
+    "verifiedTrue": [
+      "真实代码库在 .obsidian 插件目录，不在交接文档目录。",
+      "第三工作台已有原型页面，可以在其基础上继续收口结构和字段。",
+      "用户已经确认三栏结构和问题闭环顺序，也确认客户数据与问题复盘库应分开。"
+    ],
+    "onlyClaimedOrNotTrueYet": [
+      "当前 UI 还没有正式表达出左选中操右辅的稳定结构。",
+      "当前右侧流程顺序和状态门还没有按发现问题到验证沉淀的顺序固定下来。",
+      "当前问题库、已改判状态和 AI skill 接入口还只是方向，未做成正式界面边界。"
+    ]
+  },
+  "review_findings": [
+    {
+      "problem": "之前几版第三工作台把重点做成了卡片化展示，信息密度和对齐方式不适合复盘。",
+      "whyItDeviates": "复盘页面不是展示海报，需要一眼扫完一行、一眼看清列头、数字、转化率和异常提示。",
+      "requiredFix": "中间操作区必须回到专业工作台表达，市场看漏斗主数据与异常提示，销售看标准矩阵表格与异常提示。"
+    },
+    {
+      "problem": "之前的右侧区块只是证据和建议堆叠，没有体现问题驱动顺序。",
+      "whyItDeviates": "真实业务是先发现问题，再找原因，再找解决方案，再验证，再沉淀回问题库。",
+      "requiredFix": "右侧固定为问题闭环辅助区，并加状态门，未完成上一步时下一步只能弱化显示或锁定。"
+    },
+    {
+      "problem": "如果把客户数据和问题复盘库揉在一起，后续很容易把客户事实层和试错经验层搅乱。",
+      "whyItDeviates": "一个问题可能关联很多客户，也可能根本不是客户问题，而是市场漏斗或销售动作问题。",
+      "requiredFix": "数据层要拆开：客户数据只放事实状态，问题复盘库存放问题、误判、原因、方案、验证和状态。"
+    }
+  ],
+  "third_workbench_definition": {
+    "pagePositioning": "经营复盘与策略纠偏台",
+    "pageStructure": [
+      "左栏：选择区",
+      "中栏：操作区",
+      "右栏：问题闭环辅助区"
+    ],
+    "leftPanelDefinition": {
+      "purpose": "只负责选主线、选对象，不承载大段数据表达。",
+      "fields": [
+        "active_view",
+        "market_review_view",
+        "sales_stage_view",
+        "current_selection_list",
+        "selection_meta"
+      ],
+      "notes": [
+        "市场视图下可选的是异常步骤、时间段、渠道项或当前问题项。",
+        "销售视图下可选的是销售人员、销售阶段或当前问题项。",
+        "左栏保持窄，不做大卡片。"
+      ]
+    },
+    "centerPanelDefinition": {
+      "purpose": "只负责当前选中对象的主数据展示和主判断。",
+      "marketViewFields": [
+        "dial_count",
+        "connect_count",
+        "wechat_agree_count",
+        "lead_keep_count",
+        "dial_to_connect_rate",
+        "connect_to_wechat_rate",
+        "wechat_to_keep_rate",
+        "market_problem_hint"
+      ],
+      "salesViewFields": [
+        "sales_owner",
+        "wechat_count",
+        "info_count",
+        "deep_link_count",
+        "low_ticket_count",
+        "formal_deal_count",
+        "wechat_to_info_rate",
+        "info_to_deep_link_rate",
+        "deep_link_to_low_ticket_rate",
+        "low_ticket_to_formal_rate",
+        "sales_problem_hint"
+      ],
+      "notes": [
+        "市场视图优先保证漏斗主数据完整显示，并把市场异常提示完整露出。",
+        "销售视图必须是标准矩阵表格，不要继续做大卡片堆叠。",
+        "销售矩阵列头、数字、百分比必须严格对齐，不允许出现无说明裸数字。"
+      ]
+    },
+    "rightPanelDefinition": {
+      "purpose": "只负责问题闭环辅助，不抢中栏主操作地位。",
+      "orderedSections": [
+        "problem_discovery",
+        "root_cause_analysis",
+        "sample_customer_links",
+        "suggested_actions",
+        "pending_validation",
+        "tried_actions_collapsible",
+        "skill_selector_button"
+      ],
+      "notes": [
+        "顺序不能乱，必须先有问题，才能往下进入原因、方案和验证。",
+        "根因猜测、建议调整、待验证都要保留 AI 标记，说明后续需要接模型能力。",
+        "skill_selector_button 先做 UI 占位，用于后续选择调用哪个 skill 分析。"
+      ]
+    }
+  },
+  "data_model_freeze": {
+    "customer_data": {
+      "positioning": "事实层，只放客户当前状态和事实，不放复盘过程。",
+      "entities": [
+        "客户摘要",
+        "跟进记录"
+      ],
+      "rules": [
+        "客户摘要用于表达客户当前有效状态。",
+        "跟进记录用于表达单次事实和过程留痕。",
+        "问题复盘过程、原因猜测、方案建议、验证结果不回写到客户数据主体。"
+      ]
+    },
+    "problem_review_library": {
+      "positioning": "经验层，独立存放问题、误判、试错、验证和沉淀。",
+      "coreFields": [
+        "problem_id",
+        "problem_title",
+        "observed_symptom",
+        "current_problem_definition",
+        "status_gate",
+        "root_cause_guess",
+        "solution_plan",
+        "validation_result",
+        "is_resolved",
+        "is_rejudged",
+        "wrong_judgment_note",
+        "redirect_to_problem_id"
+      ],
+      "rules": [
+        "问题库不是客户库的附表，而是独立数据库对象。",
+        "误判不是简单失败，必须作为高价值经验沉淀。",
+        "如果发现最初问题定义错了，原问题改为已改判，并指向新问题。"
+      ]
+    },
+    "relation_rules": {
+      "positioning": "连接事实层与经验层，但不混写字段。",
+      "relationFields": [
+        "related_customer_ids",
+        "related_sales_ids",
+        "related_stage_ids",
+        "related_time_range",
+        "related_sample_records"
+      ],
+      "rules": [
+        "一个问题可以关联多个客户样本。",
+        "一个问题可以关联一个或多个销售。",
+        "一个问题可以关联单个阶段，也可以关联一个时间段。",
+        "客户数据只作为证据来源，不承载问题闭环状态。"
+      ]
+    },
+    "status_gate_flow": {
+      "normalFlow": [
+        "发现问题",
+        "原因分析",
+        "解决方案",
+        "验证中",
+        "已解决"
+      ],
+      "specialFlow": [
+        "待确认问题",
+        "已改判",
+        "新问题重建"
+      ],
+      "validationStates": [
+        "有效",
+        "部分有效",
+        "无效",
+        "误判线索"
+      ],
+      "rules": [
+        "未完成上一步时，下一步默认弱化显示或不可进入。",
+        "人工可以直接手动提出问题，再调用 AI 做原因分析。",
+        "AI 也可以先给出候选问题，但必须由人工确认后再推进。",
+        "如果问题未解决，下次 AI 给建议前必须先检索该问题历史记录和过去失败方案。"
+      ]
+    }
+  },
+  "current_prd_execution_order": [
+    "先收口三栏结构",
+    "再收口左栏选择区",
+    "再收口中栏市场漏斗主操作区",
+    "再收口中栏销售阶段标准矩阵",
+    "再收口右栏问题闭环辅助区",
+    "最后统一 AI 标记、占位文案和状态门表现"
+  ],
+  "execution_constraints": {
+    "mustDo": [
+      "把第三工作台正式纠偏成左选中操右辅。",
+      "把客户数据、问题复盘库、关联规则、状态门流转按本 PRD 冻结。",
+      "把右栏顺序固定为先问题、后原因、再方案、再验证、最后历史尝试。",
+      "把 AI 相关区块和 skill 选择按钮做成明显但克制的占位入口。"
+    ],
+    "mustNotDo": [
+      "不要把客户数据和问题复盘库合并。",
+      "不要把右栏做成普通建议堆叠区。",
+      "不要提前承诺真实数据库闭环和真实 AI skill 调用已打通。",
+      "不要改第一、第二工作台。",
+      "不要把 mock 和占位说成真实统计或真实策略引擎。"
+    ]
+  },
+  "done_definition": {
+    "roundDoneMeans": [
+      "第三工作台骨架已经稳定为左选中操右辅。",
+      "右栏问题闭环顺序和状态门已经清晰表达。",
+      "客户数据与问题复盘库的分层关系已经明确，不再混乱。",
+      "AI 相关入口和后续接 skill 的位置已经被准确预留。"
+    ],
+    "roundNotDoneMeans": [
+      "不意味着真实问题库写入已经完成。",
+      "不意味着 AI 根因分析、建议调整、验证判断已经真实可用。",
+      "不意味着数据库检索和历史回灌已经接通。"
+    ]
+  },
+  "final_report_requirement": {
+    "claudeMustReport": [
+      "左栏现在如何选择主线和当前对象",
+      "中栏市场视图具体如何展示",
+      "中栏销售视图具体如何改成标准矩阵",
+      "右栏问题闭环顺序和状态门如何表达",
+      "AI 标记和 skill 选择按钮放在了哪里",
+      "哪些数据和动作仍然是 mock 或占位",
+      "构建是否通过"
+    ]
+  },
+  "userStories": [
+    {
+      "id": "OPS-V4-001",
+      "title": "第三工作台改成左选中操右辅三栏结构",
+      "description": "先把整体页面结构固定成三栏，不再沿用旧的左右证据区口径。左栏只选，中栏主操作，右栏问题闭环辅助。",
+      "acceptanceCriteria": [
+        "三栏职责明确，没有互相抢位。",
+        "中栏明显最宽，优先保证主数据完整展示。",
+        "右栏固定但克制，不抢主操作空间。"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": [
+        "这是结构 story，不做真实逻辑。"
+      ]
+    },
+    {
+      "id": "OPS-V4-002",
+      "title": "左栏选择区收口",
+      "description": "左栏固定放主线切换和当前对象列表。市场和销售都通过这里切换，不在中栏重复做切换导航。",
+      "acceptanceCriteria": [
+        "左栏有市场漏斗复盘和销售阶段复盘切换。",
+        "左栏有当前对象列表或当前问题列表。",
+        "左栏保持窄，不做大卡片。"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": [
+        "当前对象列表可以先用占位项。"
+      ]
+    },
+    {
+      "id": "OPS-V4-003",
+      "title": "中栏市场漏斗主操作区收口",
+      "description": "市场漏斗视图收成专业工作台表达，核心目标是让漏斗数据和市场异常提示尽量在常规屏幕内完整看清。",
+      "acceptanceCriteria": [
+        "拨号、接通、微信同意、保留入库清晰可读。",
+        "转化率表达清楚，不靠花哨视觉解释。",
+        "市场异常提示完整露出，不被大字号和大留白挤掉。"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": [
+        "可以继续用 mock 数据，但要明确是示意值。"
+      ]
+    },
+    {
+      "id": "OPS-V4-004",
+      "title": "中栏销售阶段改成标准矩阵表格",
+      "description": "销售阶段视图必须改成标准数据矩阵。第一列是销售，后面是五个阶段列，再后面是四个转化率列，并把异常提示放到表格下方。",
+      "acceptanceCriteria": [
+        "所有列头、数字、百分比严格对齐。",
+        "不再出现无说明裸数字。",
+        "异常提示不插进表格正文中间。"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": [
+        "列头建议用表格工作台风格的小字号。",
+        "不要再用大卡片堆叠。"
+      ]
+    },
+    {
+      "id": "OPS-V4-005",
+      "title": "右栏问题闭环辅助区收口",
+      "description": "右栏顺序固定为发现问题、原因分析、样本客户链接、建议调整、待验证、已尝试动作折叠区，并加 AI 标记。",
+      "acceptanceCriteria": [
+        "右栏顺序与问题闭环一致，不乱序。",
+        "已尝试动作只作为底部可展开区，不抢主要位置。",
+        "样本客户链接仍保留在右栏，作为问题和原因的证据。"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": [
+        "右栏是辅助区，不要改成主操作区。"
+      ]
+    },
+    {
+      "id": "OPS-V4-006",
+      "title": "问题状态门和已改判状态收口",
+      "description": "把状态门做进右栏流程里，并明确支持已改判这一特殊状态，避免把问题提错简单记成未解决。",
+      "acceptanceCriteria": [
+        "下一步在上一步未完成前弱化或锁定显示。",
+        "界面上存在已改判状态表达。",
+        "能看出已改判会指向新问题，而不是直接删除旧问题。"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": [
+        "这轮只做状态表达，不做真实状态流转写入。"
+      ]
+    },
+    {
+      "id": "OPS-V4-007",
+      "title": "AI 接入口与占位文案统一",
+      "description": "把根因猜测、建议调整、待验证三块统一加 AI 标记，并增加 skill 选择按钮占位，同时在页面明确说明当前仍是 UI 和占位阶段。",
+      "acceptanceCriteria": [
+        "AI 标记位置统一、克制、可识别。",
+        "有 skill 选择按钮占位，但不接真实逻辑。",
+        "页面文案不会把占位能力说成真实可用。"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": [
+        "这一 story 主要防止后面接插件时找不到入口。"
+      ]
+    }
+  ]
+}
