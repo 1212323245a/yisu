@@ -1,0 +1,705 @@
+/* ============================================
+   Workbench 1 - Lead Screening（UI外壳重做版 v2）
+   保留字段和功能，重做视觉外壳
+   对应修复: LEAD-PROBLEM-01/02/03/04
+   ============================================ */
+
+/* === Lead Workbench Private Layout Tokens ===
+   工业级专业工具台美学：深色背景 + 粗壮边框 + 明确分区
+   所有变量以 --lead- 开头，确保模块隔离
+   ============================================ */
+.wb-lead-container-v2 {
+  /* Layout - Private to Lead */
+  --lead-header-height: 72px;
+  --lead-left-width: 340px;
+  --lead-right-width: 420px;
+
+  /* ============================================
+     TYPOGRAPHY SCALE - 修复 LEAD-PROBLEM-01/02
+     更大的标题层级，明确的分区标识
+     ============================================ */
+  /* 主标题 - 工作台级别 */
+  --lead-size-title-workbench: 28px;
+  --lead-weight-title-workbench: 700;
+
+  /* 栏目标题 - 一级分区 */
+  --lead-size-title-section: 20px;
+  --lead-weight-title-section: 600;
+
+  /* 卡片标题 - 二级分区 */
+  --lead-size-title-card: 16px;
+  --lead-weight-title-card: 600;
+
+  /* 正文 */
+  --lead-size-body-normal: 14px;
+  --lead-size-body-small: 13px;
+  --lead-size-tag: 12px;
+
+  /* Spacing - Private to Lead */
+  --lead-spacing-xs: 6px;
+  --lead-spacing-sm: 10px;
+  --lead-spacing-md: 16px;
+  --lead-spacing-lg: 24px;
+  --lead-spacing-xl: 32px;
+
+  /* Border & Shadow - Industrial aesthetic */
+  --lead-border-thick: 2px;
+  --lead-border-medium: 1px;
+  --lead-shadow-soft: 0 4px 20px rgba(0,0,0,0.4);
+  --lead-shadow-glow: 0 0 30px rgba(0,255,255,0.08);
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: linear-gradient(180deg, #0a0e14 0%, #0d1219 100%);
+}
+
+/* ============================================
+   HEADER - 修复 LEAD-PROBLEM-01
+   更大的工作台主标题，更强的视觉层级
+   ============================================ */
+.wb-lead-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--lead-header-height);
+  padding: 0 var(--lead-spacing-xl);
+  background: linear-gradient(180deg, #141920 0%, #10151c 100%);
+  border-bottom: var(--lead-border-thick) solid var(--border-cyan);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.wb-lead-header-title {
+  font-family: var(--font-display);
+  font-size: var(--lead-size-title-workbench);
+  font-weight: var(--lead-weight-title-workbench);
+  color: var(--neon-cyan);
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+
+.wb-lead-header-subtitle {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  color: var(--text-muted);
+  margin-left: var(--lead-spacing-lg);
+  padding-left: var(--lead-spacing-lg);
+  border-left: 2px solid var(--border-cyan);
+}
+
+.wb-lead-header-status {
+  display: flex;
+  gap: var(--lead-spacing-lg);
+  align-items: center;
+}
+
+/* ============================================
+   三栏布局 - 修复 LEAD-PROBLEM-03
+   更平衡的三栏比例
+   ============================================ */
+.wb-lead-three-column {
+  display: grid;
+  grid-template-columns: var(--lead-left-width) 1fr var(--lead-right-width);
+  grid-template-rows: 1fr;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ============================================
+   左栏 - 线索列表
+   ============================================ */
+.wb-lead-left-panel {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0f1419 0%, #0a0e14 100%);
+  border-right: var(--lead-border-thick) solid var(--border-cyan);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 栏目标题 - 修复 LEAD-PROBLEM-02 */
+.wb-lead-left-header {
+  display: flex;
+  align-items: center;
+  padding: var(--lead-spacing-md) var(--lead-spacing-lg);
+  font-family: var(--font-display);
+  font-size: var(--lead-size-title-section);
+  font-weight: var(--lead-weight-title-section);
+  color: var(--neon-cyan);
+  background: linear-gradient(180deg, #141920 0%, #0f1419 100%);
+  border-bottom: var(--lead-border-medium) solid var(--border-cyan);
+  letter-spacing: 0.3px;
+}
+
+/* 搜索栏 */
+.wb-lead-search-compact {
+  display: flex;
+  padding: var(--lead-spacing-md) var(--lead-spacing-lg);
+  background: rgba(0,0,0,0.2);
+  border-bottom: var(--lead-border-medium) solid rgba(0,255,255,0.1);
+}
+
+.wb-lead-search-input-compact {
+  flex: 1;
+  padding: var(--lead-spacing-sm) var(--lead-spacing-md);
+  background: #1a222c;
+  border: var(--lead-border-medium) solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-normal);
+  transition: all 0.2s ease;
+}
+
+.wb-lead-search-input-compact:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0,255,255,0.15);
+  outline: none;
+}
+
+.wb-lead-search-input-compact::placeholder {
+  color: var(--text-muted);
+}
+
+/* 分类标签 */
+.wb-lead-category-tabs {
+  display: flex;
+  gap: var(--lead-spacing-xs);
+  padding: var(--lead-spacing-sm) var(--lead-spacing-lg);
+  border-bottom: var(--lead-border-medium) solid rgba(0,255,255,0.15);
+  background: rgba(0,0,0,0.15);
+}
+
+.wb-lead-category-tab {
+  padding: var(--lead-spacing-xs) var(--lead-spacing-sm);
+  background: transparent;
+  border: var(--lead-border-medium) solid transparent;
+  border-radius: 4px;
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-lead-category-tab:hover {
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.05);
+}
+
+.wb-lead-category-tab.active {
+  color: var(--neon-cyan);
+  border-color: var(--border-cyan);
+  background: rgba(0,255,255,0.08);
+}
+
+/* 线索列表容器 */
+.wb-lead-list-compact {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: var(--lead-spacing-sm) var(--lead-spacing-lg);
+}
+
+/* 线索条目 */
+.wb-lead-item-compact {
+  display: grid;
+  grid-template-columns: 24px 1fr 28px;
+  gap: var(--lead-spacing-sm);
+  align-items: center;
+  padding: var(--lead-spacing-sm) var(--lead-spacing-md);
+  margin-bottom: var(--lead-spacing-sm);
+  background: linear-gradient(135deg, #151b24 0%, #111720 100%);
+  border: var(--lead-border-medium) solid rgba(0,255,255,0.12);
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-lead-item-compact:hover {
+  border-left-color: var(--neon-cyan);
+  border-color: rgba(0,255,255,0.25);
+  background: linear-gradient(135deg, #1a222c 0%, #151b24 100%);
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.wb-lead-item-compact.selected {
+  border-left-color: var(--neon-green);
+  border-color: rgba(0,255,136,0.35);
+  background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(0,255,136,0.03) 100%);
+  box-shadow: 0 0 15px rgba(0,255,136,0.1);
+}
+
+.wb-lead-item-compact.checked {
+  background: rgba(0,255,136,0.12);
+}
+
+.wb-lead-item-checkbox {
+  display: flex;
+  justify-content: center;
+}
+
+/* 信息行 */
+.wb-lead-item-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lead-spacing-xs);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.wb-lead-item-name {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-normal);
+  font-weight: 500;
+  color: var(--text-primary);
+  flex-shrink: 0;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wb-lead-item-company {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  color: var(--text-muted);
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wb-lead-item-duration {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  color: var(--neon-cyan);
+  flex-shrink: 0;
+  padding: 2px 6px;
+  background: rgba(0,255,255,0.08);
+  border-radius: 3px;
+}
+
+/* 意向标签 */
+.wb-lead-item-intent-tag {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.wb-lead-item-intent-tag.high-intent {
+  background: rgba(0,255,136,0.2);
+  color: var(--neon-green);
+  border: var(--lead-border-medium) solid var(--border-green);
+}
+
+.wb-lead-item-intent-tag.low-intent {
+  background: rgba(255,0,102,0.2);
+  color: var(--neon-red);
+  border: var(--lead-border-medium) solid var(--border-red);
+}
+
+.wb-lead-item-intent-tag.pending {
+  background: rgba(0,255,255,0.2);
+  color: var(--neon-cyan);
+  border: var(--lead-border-medium) solid var(--border-cyan);
+}
+
+/* ============================================
+   中栏 - 核心操作台
+   修复 LEAD-PROBLEM-02: 更大的栏目标题
+   修复 LEAD-PROBLEM-03: 更紧凑的执行操作区
+   ============================================ */
+.wb-lead-center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lead-spacing-md);
+  background: linear-gradient(180deg, #0d1219 0%, #0a0e14 100%);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--lead-spacing-lg);
+}
+
+/* 核心操作台标题 - 修复 LEAD-PROBLEM-02 */
+.wb-lead-center-title {
+  font-family: var(--font-display);
+  font-size: var(--lead-size-title-section);
+  font-weight: var(--lead-weight-title-section);
+  color: var(--neon-cyan);
+  padding-bottom: var(--lead-spacing-sm);
+  border-bottom: var(--lead-border-medium) solid var(--border-cyan);
+  margin-bottom: var(--lead-spacing-sm);
+  letter-spacing: 0.3px;
+}
+
+/* 卡片系统 - 统一卡片标题样式 */
+.cyber-card {
+  background: linear-gradient(135deg, #141920 0%, #0f1419 100%);
+  border: var(--lead-border-medium) solid rgba(0,255,255,0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 卡片标题 - 修复 LEAD-PROBLEM-02 */
+.cyber-card-header {
+  display: flex;
+  align-items: center;
+  padding: var(--lead-spacing-md) var(--lead-spacing-lg);
+  font-family: var(--font-display);
+  font-size: var(--lead-size-title-card);
+  font-weight: var(--lead-weight-title-card);
+  color: var(--neon-cyan);
+  background: linear-gradient(180deg, #1a222c 0%, #141920 100%);
+  border-bottom: var(--lead-border-medium) solid rgba(0,255,255,0.1);
+  letter-spacing: 0.2px;
+}
+
+.cyber-card-body {
+  padding: var(--lead-spacing-md);
+}
+
+/* 销售归属卡片 */
+.wb-lead-sales-card {
+  border: var(--lead-border-medium) solid rgba(0,255,136,0.25);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #141920 0%, rgba(0,255,136,0.02) 100%);
+}
+
+.wb-lead-sales-current-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--lead-spacing-md);
+  background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(0,255,136,0.02) 100%);
+  border: var(--lead-border-medium) solid var(--border-green);
+  border-radius: 6px;
+  overflow: visible;
+}
+
+.wb-lead-sales-current-label {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-small);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.wb-lead-sales-select {
+  min-width: 120px;
+  padding: 8px 28px 8px 12px;
+  line-height: 1.5;
+  background: #1a222c;
+  border: var(--lead-border-medium) solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-normal);
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 32px;
+}
+
+.wb-lead-sales-select:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 12px rgba(0,255,255,0.15);
+  outline: none;
+}
+
+/* ============================================
+   执行操作区 - 修复 LEAD-PROBLEM-03
+   收紧高度，减少冗余空白
+   ============================================ */
+.wb-lead-action-card {
+  border: var(--lead-border-medium) solid rgba(255,255,0,0.25);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #141920 0%, rgba(255,255,0,0.02) 100%);
+}
+
+/* 执行按钮区 - 更紧凑 */
+.wb-lead-confirm-buttons {
+  display: flex;
+  gap: var(--lead-spacing-lg);
+  justify-content: center;
+  padding: var(--lead-spacing-md) 0;
+}
+
+.wb-lead-confirm-buttons .cyber-btn {
+  min-width: 140px;
+  padding: var(--lead-spacing-sm) var(--lead-spacing-lg);
+  font-family: var(--font-display);
+  font-size: var(--lead-size-body-normal);
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.wb-lead-confirm-buttons .cyber-btn-primary {
+  background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,255,136,0.1) 100%);
+  border: var(--lead-border-medium) solid var(--border-green);
+  color: var(--neon-green);
+}
+
+.wb-lead-confirm-buttons .cyber-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(0,255,136,0.3) 0%, rgba(0,255,136,0.15) 100%);
+  box-shadow: 0 0 20px rgba(0,255,136,0.2);
+  transform: translateY(-1px);
+}
+
+.wb-lead-confirm-buttons .cyber-btn-danger {
+  background: linear-gradient(135deg, rgba(255,0,102,0.2) 0%, rgba(255,0,102,0.1) 100%);
+  border: var(--lead-border-medium) solid var(--border-red);
+  color: var(--neon-red);
+}
+
+.wb-lead-confirm-buttons .cyber-btn-danger:hover {
+  background: linear-gradient(135deg, rgba(255,0,102,0.3) 0%, rgba(255,0,102,0.15) 100%);
+  box-shadow: 0 0 20px rgba(255,0,102,0.2);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   右栏 - 辅助证据区
+   修复 LEAD-PROBLEM-02: 更大的栏目标题
+   ============================================ */
+.wb-lead-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lead-spacing-md);
+  background: linear-gradient(180deg, #0f1419 0%, #0a0e14 100%);
+  border-left: var(--lead-border-thick) solid var(--border-cyan);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--lead-spacing-lg);
+}
+
+/* 辅助证据标题 - 修复 LEAD-PROBLEM-02 */
+.wb-lead-right-title {
+  font-family: var(--font-display);
+  font-size: var(--lead-size-title-section);
+  font-weight: var(--lead-weight-title-section);
+  color: var(--neon-cyan);
+  padding-bottom: var(--lead-spacing-sm);
+  border-bottom: var(--lead-border-medium) solid var(--border-cyan);
+  letter-spacing: 0.3px;
+}
+
+/* 录音概览 */
+.wb-lead-recording-placeholder {
+  padding: var(--lead-spacing-md);
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-small);
+  color: var(--text-muted);
+  text-align: center;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  border: var(--lead-border-medium) dashed rgba(0,255,255,0.15);
+}
+
+/* ============================================
+   音频播放器
+   ============================================ */
+.wb-lead-audio-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lead-spacing-md);
+  padding: var(--lead-spacing-md);
+  background: linear-gradient(135deg, #0f1419 0%, #141920 100%);
+  border: var(--lead-border-medium) solid rgba(0,255,255,0.15);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.wb-lead-audio-info {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-small);
+  color: var(--text-secondary);
+}
+
+.wb-lead-audio-current {
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-lead-audio-progress {
+  position: relative;
+  height: 24px;
+  background: #1a222c;
+  border: var(--lead-border-medium) solid rgba(0,255,255,0.15);
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.wb-lead-audio-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+  transition: width 0.1s linear;
+}
+
+.wb-lead-audio-progress-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--neon-cyan);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0,255,255,0.5);
+  transition: left 0.1s linear;
+}
+
+.wb-lead-audio-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.wb-lead-audio-play-btn {
+  padding: var(--lead-spacing-sm) var(--lead-spacing-xl);
+  background: transparent;
+  border: var(--lead-border-medium) solid var(--neon-cyan);
+  border-radius: 6px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-lead-audio-play-btn:hover {
+  background: rgba(0,255,255,0.1);
+  box-shadow: 0 0 15px rgba(0,255,255,0.2);
+}
+
+.wb-lead-audio-play-btn.playing {
+  background: rgba(0,255,136,0.2);
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+/* 转写正文卡片 */
+.wb-lead-transcript-card {
+  flex: 1;
+  min-height: 0;
+}
+
+.wb-lead-transcript-card .cyber-card-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.wb-lead-transcript-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lead-spacing-xs);
+  min-height: 0;
+}
+
+/* 转写正文占位提示 */
+.wb-lead-transcript-placeholder {
+  padding: var(--lead-spacing-lg);
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-body-small);
+  color: var(--text-muted);
+  text-align: center;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  border: var(--lead-border-medium) dashed rgba(0,255,255,0.15);
+}
+
+/* ============================================
+   转写正文 - 修复 LEAD-PROBLEM-04
+   新的会话流布局：时间戳 + 说话人 + 正文
+   ============================================ */
+.wb-lead-transcript-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lead-spacing-xs);
+  padding: var(--lead-spacing-sm) var(--lead-spacing-md);
+  background: rgba(0,0,0,0.15);
+  border: var(--lead-border-medium) solid rgba(0,255,255,0.08);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.wb-lead-transcript-row:hover {
+  background: rgba(0,255,255,0.05);
+  border-color: rgba(0,255,255,0.15);
+}
+
+/* 转写头部：时间戳 + 说话人 */
+.wb-lead-transcript-header {
+  display: flex;
+  align-items: center;
+  gap: var(--lead-spacing-sm);
+}
+
+/* 时间戳 */
+.wb-lead-transcript-time {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  color: var(--neon-purple);
+  padding: 2px 8px;
+  background: rgba(191,0,255,0.1);
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wb-lead-transcript-time:hover {
+  background: rgba(191,0,255,0.2);
+}
+
+/* 说话人标签 */
+.wb-lead-transcript-speaker {
+  font-family: var(--font-tech);
+  font-size: var(--lead-size-tag);
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* 说话人颜色区分 */
+.wb-lead-transcript-speaker.sales {
+  color: var(--neon-cyan);
+  background: rgba(0,255,255,0.1);
+}
+
+.wb-lead-transcript-speaker.customer {
+  color: var(--neon-green);
+  background: rgba(0,255,136,0.1);
+}
+
+.wb-lead-transcript-speaker.unknown {
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.05);
+}
+
+/* 正文内容 - 主要阅读区 */
+.wb-lead-transcript-text {
+  font-family: var(--font-body);
+  font-size: var(--lead-size-body-normal);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding-left: 0;
+  margin-top: var(--lead-spacing-xs);
+}

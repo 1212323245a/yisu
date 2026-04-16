@@ -1,0 +1,370 @@
+/* ============================================
+   Shared Components - Buttons, Cards, Tags
+   ============================================ */
+
+/* === Cyber Header === */
+.cyber-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(180deg, var(--dark-300), var(--dark-200));
+  border-bottom: 1px solid var(--border-cyan);
+}
+
+.cyber-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.cyber-title {
+  font-family: var(--font-display);
+  font-size: var(--size-title-main);
+  font-weight: 700;
+  color: var(--neon-cyan);
+}
+
+.cyber-subtitle {
+  font-family: var(--font-tech);
+  font-size: var(--size-body-small);
+  color: var(--text-secondary);
+}
+
+.cyber-status-bar {
+  display: flex;
+  gap: var(--spacing-lg);
+  font-family: var(--font-tech);
+  font-size: var(--size-body-small);
+}
+
+.cyber-status-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-muted);
+}
+
+/* === Cyber Stat Card === */
+.cyber-stat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: var(--dark-300);
+  border: 1px solid var(--border-cyan);
+  clip-path: var(--clip-corner);
+  overflow: hidden;
+}
+
+.cyber-stat-icon {
+  font-size: var(--size-body-small);
+  color: var(--text-muted);
+}
+
+.cyber-stat-value {
+  font-family: var(--font-display);
+  font-size: var(--size-stat-value);
+  font-weight: 700;
+}
+
+.cyber-stat-label {
+  font-family: var(--font-tech);
+  font-size: var(--size-body-small);
+  color: var(--text-secondary);
+}
+
+.cyber-stat-bar {
+  height: 4px;
+  background: var(--dark-200);
+  margin-top: var(--spacing-sm);
+}
+
+.cyber-stat-bar-fill {
+  height: 100%;
+  transition: width var(--anim-normal) ease;
+}
+
+/* === Cyber Button === */
+.cyber-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-family: var(--font-tech);
+  font-size: var(--size-body-normal);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+  overflow: hidden;
+}
+
+.cyber-btn-primary {
+  background: linear-gradient(135deg, var(--neon-green), var(--dark-200));
+  border: 1px solid var(--neon-green);
+  color: var(--text-primary);
+  clip-path: var(--clip-corner);
+  box-shadow: var(--glow-green);
+}
+
+.cyber-btn-primary:hover {
+  background: linear-gradient(135deg, var(--neon-green), var(--neon-cyan));
+  transform: translateY(-2px);
+}
+
+.cyber-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  color: var(--neon-cyan);
+  clip-path: var(--clip-corner);
+}
+
+.cyber-btn-secondary:hover {
+  background: rgba(0,255,255,0.1);
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-btn-danger {
+  background: linear-gradient(135deg, var(--neon-red), var(--dark-200));
+  border: 1px solid var(--neon-red);
+  color: var(--text-primary);
+  clip-path: var(--clip-corner);
+  box-shadow: var(--glow-red);
+}
+
+.cyber-btn-danger:hover {
+  background: linear-gradient(135deg, var(--neon-red), var(--neon-orange));
+}
+
+.cyber-btn-weak {
+  background: transparent;
+  border: 1px solid var(--border-purple);
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-size: var(--size-body-small);
+}
+
+.cyber-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* === Cyber Checkbox === */
+.cyber-checkbox {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border-cyan);
+  clip-path: var(--clip-hex);
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.cyber-checkbox.checked {
+  background: var(--neon-green);
+  border-color: var(--neon-green);
+}
+
+.cyber-checkbox:hover {
+  border-color: var(--neon-cyan);
+}
+
+/* === Cyber Tag === */
+.cyber-tag {
+  display: inline-flex;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-tech);
+  font-size: var(--size-tag);
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.cyber-tag[data-type="product"] {
+  background: rgba(0,255,136,0.1);
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.cyber-tag[data-type="price"] {
+  background: rgba(255,255,0,0.1);
+  border-color: var(--neon-yellow);
+  color: var(--neon-yellow);
+}
+
+.cyber-tag[data-type="need"] {
+  background: rgba(0,255,255,0.1);
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.cyber-tag[data-type="negative"] {
+  background: rgba(255,0,102,0.1);
+  border-color: var(--neon-red);
+  color: var(--neon-red);
+}
+
+/* === Cyber Card (Work Card) === */
+.cyber-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--dark-300);
+  border: 1px solid var(--border-cyan);
+  border-radius: 0;
+}
+
+.cyber-card::before,
+.cyber-card::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border-cyan);
+}
+
+.cyber-card::before {
+  top: -1px;
+  right: -1px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.cyber-card::after {
+  bottom: -1px;
+  left: -1px;
+  border-right: none;
+  border-top: none;
+}
+
+.cyber-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: var(--size-title-card);
+  color: var(--neon-cyan);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid rgba(0,255,255,0.1);
+}
+
+.cyber-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.cyber-card.priority-high {
+  background: rgba(0,255,136,0.08);
+  border-left: 3px solid var(--neon-green);
+}
+
+/* === Field Row === */
+.field-row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+.field-label {
+  font-family: var(--font-tech);
+  font-size: var(--size-body-small);
+  color: var(--text-secondary);
+}
+
+.field-value {
+  font-family: var(--font-tech);
+  font-size: var(--size-body-normal);
+  color: var(--text-primary);
+}
+
+.field-editable {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-cyan);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+}
+
+.field-linkable {
+  cursor: pointer;
+  color: var(--neon-cyan);
+  transition: all var(--anim-fast) ease;
+}
+
+.field-linkable:hover {
+  text-decoration: underline;
+  box-shadow: var(--glow-cyan);
+}
+
+/* === Queue List === */
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px); /* Fixed: no longer depends on shared layout tokens */
+}
+
+.queue-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  background: var(--dark-400);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.queue-item:hover {
+  border-left: 2px solid var(--neon-cyan);
+  background: var(--dark-300);
+}
+
+.queue-item.active {
+  border-left: 2px solid var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.queue-item-title {
+  font-family: var(--font-tech);
+  font-size: var(--size-body-normal);
+  color: var(--text-primary);
+}
+
+.queue-item-status {
+  font-family: var(--font-tech);
+  font-size: var(--size-tag);
+  color: var(--text-muted);
+}
+
+/* === Mini Stat === */
+.stat-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-cyan);
+}
+
+.stat-mini-value {
+  font-family: var(--font-display);
+  font-size: var(--size-body-large);
+  font-weight: 700;
+}
+
+.stat-mini-label {
+  font-family: var(--font-tech);
+  font-size: var(--size-tag);
+  color: var(--text-muted);
+}

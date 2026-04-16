@@ -1,0 +1,157 @@
+/* ============================================
+   Obsidian Override - Reset Default Styles
+   ============================================ */
+
+/* === Root Container === */
+.cyber-workbench-root {
+  background: var(--dark-100) !important;
+  color: var(--text-primary) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  font-family: var(--font-body) !important;
+}
+
+/* === Workspace Leaf Content === */
+.cyber-workbench-root .workspace-leaf-content {
+  padding: 0 !important;
+}
+
+/* === Reset Obsidian Link Styling === */
+.cyber-workbench-root a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.cyber-workbench-root a:hover {
+  text-decoration: none !important;
+}
+
+/* === Override Input Styling === */
+.cyber-workbench-root input,
+.cyber-workbench-root textarea,
+.cyber-workbench-root select {
+  background: rgba(0,0,0,0.5) !important;
+  border: 1px solid var(--border-cyan) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-tech) !important;
+  padding: 12px 20px !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.cyber-workbench-root input:focus,
+.cyber-workbench-root textarea:focus,
+.cyber-workbench-root select:focus {
+  border-color: var(--neon-cyan) !important;
+  box-shadow: 0 0 10px rgba(0,255,255,0.3) !important;
+}
+
+/* === Override Button Styling === */
+.cyber-workbench-root button:not(.cyber-btn) {
+  background: rgba(0,255,255,0.1) !important;
+  border: 1px solid var(--border-cyan) !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+}
+
+/* === Override Select Dropdown === */
+/* US-001: 根因修复 - 全局 select 样式确保文字完整显示 */
+.cyber-workbench-root select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ffff' d='M6 8L2 4h8z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  padding: 6px 24px 6px 10px !important; /* US-001: 垂直 padding 6px 确保文字不被裁切 */
+  line-height: 1.5 !important; /* US-001: 关键 - 设置 line-height 让文字完整显示 */
+  height: auto !important; /* US-001: 不强制固定高度，让内容自然撑开 */
+  min-height: 28px !important; /* US-001: 最小高度确保一致性 */
+}
+
+/* === Override Checkbox === */
+.cyber-workbench-root input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: rgba(0,0,0,0.5) !important;
+  border: 1px solid var(--border-cyan) !important;
+}
+
+/* === Override Scrollbar === */
+.cyber-workbench-root::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.cyber-workbench-root::-webkit-scrollbar-track {
+  background: var(--dark-200) !important;
+}
+
+.cyber-workbench-root::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan) !important;
+  opacity: 0.5 !important;
+}
+
+.cyber-workbench-root::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-cyan) !important;
+  opacity: 1 !important;
+}
+
+/* === Override Horizontal Rule === */
+.cyber-workbench-root hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent) !important;
+}
+
+/* === Override Heading Colors === */
+.cyber-workbench-root h1,
+.cyber-workbench-root h2,
+.cyber-workbench-root h3,
+.cyber-workbench-root h4,
+.cyber-workbench-root h5,
+.cyber-workbench-root h6 {
+  color: var(--text-primary) !important;
+  font-family: var(--font-display) !important;
+}
+
+/* === Override List Styling === */
+.cyber-workbench-root ul,
+.cyber-workbench-root ol {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+}
+
+/* === Override Table === */
+.cyber-workbench-root table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+.cyber-workbench-root th,
+.cyber-workbench-root td {
+  border: 1px solid var(--border-cyan) !important;
+  padding: 12px !important;
+  text-align: left !important;
+}
+
+.cyber-workbench-root th {
+  background: rgba(0,255,255,0.1) !important;
+  color: var(--neon-cyan) !important;
+}
+
+/* === Prevent Theme Conflicts === */
+.cyber-workbench-root * {
+  box-sizing: border-box !important;
+}
+
+/* === Remove Obsidian Native Margins === */
+.cyber-workbench-root .nav-folder,
+.cyber-workbench-root .nav-file {
+  margin: 0 !important;
+  padding: 0 !important;
+}

@@ -1,0 +1,1607 @@
+/* ============================================
+   Workbench 3 - 经营复盘与策略纠偏台
+   Layout: 左选 / 中操 / 右辅 三栏结构
+   Version: V9 - 结构回正：市场话术复盘与销售认知复盘彻底拆分
+   ============================================ */
+
+/* === OPS Workbench Private Layout Tokens ===
+   这些变量仅作用于第三工作台(OPS)，不影响其他工作台
+   修改这些变量不会污染审核链路工作台或线索筛选工作台
+   ============================================ */
+.wb-ops-container {
+  /* Layout - Private to OPS */
+  --ops-left-panel-width: 220px;
+  --ops-right-panel-width: 320px;
+  --ops-header-height: 32px;
+  --ops-footer-height: 16px;
+
+  /* Typography - Private to OPS (isolated from shared tokens) */
+  --ops-size-title-main: 22px;
+  --ops-size-title-section: 17px;
+  --ops-size-title-block: 15px;
+  --ops-size-body-normal: 15px;
+  --ops-size-body-small: 14px;
+  --ops-size-tag: 13px;
+
+  /* Spacing - Private to OPS */
+  --ops-spacing-xs: 6px;
+  --ops-spacing-sm: 12px;
+  --ops-spacing-md: 20px;
+  --ops-spacing-lg: 28px;
+
+  height: 100%;
+  min-height: 0;
+}
+
+/* ============================================
+   MAIN CONTAINER & THREE-COLUMN LAYOUT
+   ============================================ */
+.wb-ops-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--dark-100);
+  font-family: var(--font-tech);
+}
+
+/* Header - V12: 最紧凑 */
+.wb-ops-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--ops-header-height);
+  padding: 1px 8px;
+  background: var(--dark-200);
+  border-bottom: 1px solid var(--border-orange);
+  gap: var(--ops-spacing-xs);
+  flex-shrink: 0;
+}
+
+.wb-ops-header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--ops-spacing-sm);
+}
+
+.wb-ops-title {
+  font-family: var(--font-display);
+  font-size: var(--ops-size-title-main);
+  color: var(--neon-orange);
+  letter-spacing: 1px;
+}
+
+.wb-ops-date-compact {
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-body-small);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+}
+
+/* ============================================
+   THREE-COLUMN LAYOUT: 左选 / 中操 / 右辅
+   ============================================ */
+.wb-ops-three-column {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+  min-height: 0;
+}
+
+/* === LEFT PANEL: 选择区 - 整列滚动 === */
+.wb-ops-left-panel {
+  width: var(--ops-left-panel-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-200);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+/* === CENTER PANEL: 操作区 - 整列滚动 + 块内滚动容器 === */
+.wb-ops-center-panel {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-100);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+/* === RIGHT PANEL: 辅助区 - 整列滚动 + 块内滚动容器 === */
+.wb-ops-right-panel {
+  width: var(--ops-right-panel-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-200);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overscroll-behavior: contain;
+}
+
+/* ============================================
+   PANEL HEADER (通用) - 紧凑
+   ============================================ */
+.wb-ops-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--dark-300);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.wb-ops-panel-title {
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-title-section);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+   LEFT PANEL: 左栏选择区 - 紧凑
+   ============================================ */
+.wb-ops-left-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-ops-section-label {
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+/* 主线切换器 */
+.wb-ops-view-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wb-ops-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+  background: var(--dark-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+  border-radius: 4px;
+}
+
+.wb-ops-switcher-btn:hover {
+  color: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.wb-ops-switcher-btn.wb-ops-switcher-active {
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.1);
+  border-color: var(--neon-cyan);
+  border-left: 3px solid var(--neon-cyan);
+}
+
+/* 对象列表 - 紧凑 */
+.wb-ops-object-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wb-ops-object-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+  background: var(--dark-300);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+  border-radius: 4px;
+}
+
+.wb-ops-object-item:hover {
+  background: var(--dark-400);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.wb-ops-object-active {
+  color: var(--text-primary);
+  background: rgba(0, 255, 255, 0.08);
+  border-color: var(--neon-cyan);
+  border-left: 3px solid var(--neon-cyan);
+}
+
+.wb-ops-object-divider {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 4px;
+}
+
+.wb-ops-object-icon {
+  font-size: var(--ops-size-body-normal);
+  flex-shrink: 0;
+}
+
+.wb-ops-object-label-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wb-ops-object-label {
+  font-weight: 500;
+  font-size: var(--ops-size-body-small);
+}
+
+.wb-ops-object-sublabel {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-ops-object-badge {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 10px;
+}
+
+.wb-ops-object-template {
+  border-left: 3px solid var(--neon-green);
+}
+
+.wb-ops-object-template .wb-ops-object-icon {
+  color: var(--neon-green);
+}
+
+.wb-ops-object-asset {
+  border-left: 3px solid var(--neon-orange);
+}
+
+/* ============================================
+   CENTER PANEL: 中栏操作区
+   ============================================ */
+.wb-ops-center-content {
+  /* V12: 移除 flex:1，让内容自然撑开以实现外层滚动 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px;
+  /* 滚动已移至外层 .wb-ops-center-panel */
+}
+
+.wb-ops-view-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 4px;
+}
+
+.wb-ops-view-title {
+  font-family: var(--font-display);
+  font-size: var(--ops-size-title-block);
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+}
+
+.wb-ops-view-subtitle {
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+}
+
+/* 阶段面板通用样式 - V13: 块内滚动支持 */
+.wb-ops-stage-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  min-height: 0;
+  flex-shrink: 0;
+}
+
+.wb-ops-stage-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--dark-400);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.wb-ops-stage-panel-title {
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-title-block);
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-ops-stage-panel-subtitle {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+/* V14: stage panel content 随内容自然撑开 */
+.wb-ops-stage-panel-content {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+/* V14: 仅客户反应归类使用块内滚动，阶段复盘整块展开 */
+.wb-ops-reactions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* 块1：阶段定义与关键数据 - 紧凑 */
+.wb-ops-definition-section {
+  background: var(--dark-400);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.wb-ops-definition-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.wb-ops-definition-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wb-ops-definition-label {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wb-ops-definition-value {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-primary);
+}
+
+/* 关键指标 - 紧凑 */
+.wb-ops-metrics-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 8px;
+}
+
+.wb-ops-metrics-title {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wb-ops-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px;
+}
+
+.wb-ops-metric-card {
+  background: var(--dark-400);
+  padding: 6px 8px;
+  border-radius: 4px;
+  border-left: 2px solid var(--text-muted);
+}
+
+.wb-ops-metric-card.wb-ops-metric-up {
+  border-left-color: var(--neon-green);
+}
+
+.wb-ops-metric-card.wb-ops-metric-down {
+  border-left-color: var(--neon-red);
+}
+
+.wb-ops-metric-name {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.wb-ops-metric-value {
+  font-family: var(--font-display);
+  font-size: var(--size-metric-value);
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.wb-ops-metric-compare {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-ops-metric-card.wb-ops-metric-up .wb-ops-metric-compare {
+  color: var(--neon-green);
+}
+
+.wb-ops-metric-card.wb-ops-metric-down .wb-ops-metric-compare {
+  color: var(--neon-red);
+}
+
+/* 块2：客户反应归类（MD引用入口）- 保守栅格策略，固定2列 + 块内滚动 */
+.wb-ops-reactions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.wb-ops-reactions-md-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.wb-ops-reaction-md-card {
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-reaction-md-card:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.wb-ops-reaction-md-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.wb-ops-reaction-md-name {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.wb-ops-reaction-md-count {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.1);
+  padding: 1px 4px;
+  border-radius: 8px;
+}
+
+.wb-ops-reaction-md-body {
+  margin-bottom: 4px;
+}
+
+.wb-ops-reaction-md-meaning {
+  font-size: var(--ops-size-tag);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.wb-ops-reaction-md-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-ops-reaction-md-target {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-orange);
+}
+
+.wb-ops-reaction-md-link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-ops-reaction-md-icon {
+  opacity: 0.7;
+}
+
+.wb-ops-md-note {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+/* 块3：阶段复盘 - V14: 整块展开/收起，移除块内滚动 */
+.wb-ops-stage-panel-review {
+  border-left: 3px solid var(--neon-orange);
+  /* 复盘面板随内容自然撑开，不限制高度 */
+  max-height: none;
+}
+
+.wb-ops-stage-panel-review .wb-ops-stage-panel-title {
+  color: var(--neon-orange);
+}
+
+/* 复盘空状态 - V14: 增加内边距 */
+.wb-ops-review-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.wb-ops-review-empty-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+  opacity: 0.5;
+}
+
+.wb-ops-review-empty-text {
+  font-size: var(--ops-size-body-normal);
+  margin-bottom: 4px;
+}
+
+.wb-ops-review-empty-hint {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.wb-ops-start-review-btn {
+  align-self: center;
+  padding: 4px 12px;
+  font-size: var(--ops-size-body-small);
+}
+
+/* 复盘流程 - V14: 整块展开，不再限制高度，移除块内滚动 */
+.wb-ops-review-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 4px;
+  /* 移除 max-height 和 overflow-y，实现整块展开 */
+}
+
+/* V14: 复盘流程各区块间距增加 */
+.wb-ops-review-flow-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wb-ops-review-flow-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wb-ops-review-flow-number {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark-400);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 50%;
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-ops-review-flow-title {
+  font-size: var(--ops-size-body-normal);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.wb-ops-review-flow-body {
+  padding-left: 34px;
+}
+
+.wb-ops-review-input,
+.wb-ops-review-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--ops-size-body-normal);
+  border-radius: 4px;
+  outline: none;
+}
+
+.wb-ops-review-input:focus,
+.wb-ops-review-textarea:focus {
+  border-color: var(--neon-cyan);
+}
+
+.wb-ops-review-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.wb-ops-review-guess {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.wb-ops-review-guess:hover {
+  border-color: var(--neon-purple);
+}
+
+.wb-ops-review-guess-radio {
+  font-size: var(--ops-size-body-normal);
+  color: var(--text-muted);
+}
+
+.wb-ops-review-guess-radio.selected {
+  color: var(--neon-purple);
+}
+
+.wb-ops-review-guess-label {
+  flex: 1;
+  font-size: var(--ops-size-body-normal);
+  color: var(--text-primary);
+}
+
+.wb-ops-review-guess-confidence {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.wb-ops-review-result-pending {
+  padding: 12px;
+  background: rgba(255, 255, 0, 0.05);
+  border: 1px dashed var(--neon-yellow);
+  border-radius: 4px;
+  text-align: center;
+  color: var(--neon-yellow);
+  font-size: var(--ops-size-body-normal);
+}
+
+.wb-ops-review-ai-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid rgba(191, 0, 255, 0.2);
+  border-radius: 4px;
+  margin-top: 12px;
+}
+
+.wb-ops-review-ai-icon {
+  font-size: var(--size-body-large);
+}
+
+.wb-ops-review-ai-text {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-purple);
+}
+
+.wb-ops-close-review-btn {
+  align-self: center;
+  margin-top: 16px;
+  padding: 10px 24px;
+  font-size: var(--ops-size-body-normal);
+}
+
+/* V8: 复盘分析笔记样式 */
+.wb-ops-review-analysis-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(0, 136, 255, 0.08);
+  border: 1px solid rgba(0, 136, 255, 0.2);
+  border-radius: 6px;
+  font-size: var(--ops-size-tag);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.wb-ops-review-analysis-note div:first-child {
+  color: var(--neon-blue);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* V8: 历史验证记录样式 */
+.wb-ops-review-history {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--dark-400);
+  border-radius: 6px;
+}
+
+.wb-ops-review-history-title {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.wb-ops-review-history-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--dark-300);
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.wb-ops-review-history-item:last-child {
+  margin-bottom: 0;
+}
+
+.wb-ops-review-history-date {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  min-width: 40px;
+}
+
+.wb-ops-review-history-result {
+  font-size: var(--ops-size-tag);
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.wb-ops-review-history-result.result-failed {
+  color: var(--neon-red);
+  background: rgba(255, 0, 80, 0.1);
+}
+
+.wb-ops-review-history-result.result-partial {
+  color: var(--neon-yellow);
+  background: rgba(255, 255, 0, 0.1);
+}
+
+.wb-ops-review-history-result.result-pending {
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 0.1);
+}
+
+.wb-ops-review-history-desc {
+  flex: 1;
+  font-size: var(--ops-size-tag);
+  color: var(--text-secondary);
+}
+
+/* 块4：阶段结论 - 紧凑 */
+.wb-ops-stage-panel-conclusion {
+  border-left: 3px solid var(--neon-green);
+}
+
+.wb-ops-stage-panel-conclusion .wb-ops-stage-panel-title {
+  color: var(--neon-green);
+}
+
+.wb-ops-conclusion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.wb-ops-conclusion-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 6px;
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-conclusion-option:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.wb-ops-conclusion-icon {
+  font-size: var(--size-title-block);
+  margin-bottom: 2px;
+}
+
+.wb-ops-conclusion-label {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.wb-ops-conclusion-desc {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-ops-status-gate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wb-ops-status-gate-label {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.wb-ops-status-gate-value {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-yellow);
+  padding: 2px 8px;
+  background: rgba(255, 255, 0, 0.1);
+  border: 1px solid var(--neon-yellow);
+  border-radius: 4px;
+}
+
+/* ============================================
+   销售认知复盘：问题资产卡片 - 紧凑
+   ============================================ */
+.wb-ops-asset-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.wb-ops-asset-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.3;
+}
+
+.wb-ops-asset-empty-text {
+  font-size: var(--ops-size-body-normal);
+}
+
+.wb-ops-asset-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.wb-ops-asset-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--dark-400);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wb-ops-asset-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wb-ops-asset-title {
+  font-size: var(--size-body-large);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wb-ops-asset-id {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  padding: 1px 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.wb-ops-asset-status-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.wb-ops-asset-status {
+  font-size: var(--ops-size-tag);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wb-ops-asset-status.status-open {
+  color: var(--neon-yellow);
+  background: rgba(255, 255, 0, 0.1);
+  border: 1px solid var(--neon-yellow);
+}
+
+.wb-ops-asset-status.status-rejudged {
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid var(--neon-purple);
+}
+
+.wb-ops-asset-status.status-resolved {
+  color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--neon-green);
+}
+
+.wb-ops-asset-section {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-ops-asset-section:last-child {
+  border-bottom: none;
+}
+
+.wb-ops-asset-section-title {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wb-ops-asset-section-content {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.wb-ops-asset-desc {
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.wb-ops-asset-why,
+.wb-ops-asset-judgement {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.wb-ops-asset-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.wb-ops-asset-metric {
+  font-size: var(--ops-size-tag);
+  padding: 4px 6px;
+  background: var(--dark-400);
+  border-radius: 4px;
+}
+
+.wb-ops-asset-samples-info {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-cyan);
+  padding: 4px 6px;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* ============================================
+   V8: 销售认知复盘 - One Detail At A Time
+   ============================================ */
+.wb-ops-asset-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.wb-ops-asset-list-title {
+  font-size: var(--size-title-block);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wb-ops-asset-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--dark-300);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-asset-summary:hover {
+  border-color: var(--neon-orange);
+  background: rgba(255, 102, 0, 0.05);
+}
+
+.wb-ops-asset-summary-selected {
+  border-color: var(--neon-orange);
+  border-left: 3px solid var(--neon-orange);
+  background: rgba(255, 102, 0, 0.08);
+}
+
+.wb-ops-asset-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wb-ops-asset-summary-title {
+  font-size: var(--size-body-large);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wb-ops-asset-summary-status {
+  font-size: var(--ops-size-tag);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.wb-ops-asset-summary-status.status-open {
+  color: var(--neon-yellow);
+  background: rgba(255, 255, 0, 0.1);
+  border: 1px solid var(--neon-yellow);
+}
+
+.wb-ops-asset-summary-status.status-rejudged {
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid var(--neon-purple);
+}
+
+.wb-ops-asset-summary-status.status-resolved {
+  color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--neon-green);
+}
+
+.wb-ops-asset-summary-desc {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+}
+
+/* 展开详情面板 */
+.wb-ops-asset-detail-expanded {
+  margin-top: 12px;
+  padding: 16px;
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.wb-ops-asset-detail-section {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-ops-asset-detail-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.wb-ops-asset-detail-section-title {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wb-ops-asset-detail-content {
+  font-size: var(--ops-size-body-normal);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.wb-ops-asset-detail-desc {
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.wb-ops-asset-detail-why,
+.wb-ops-asset-detail-judgement {
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.wb-ops-asset-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.wb-ops-asset-detail-metric {
+  font-size: var(--ops-size-body-small);
+  padding: 6px 8px;
+  background: var(--dark-300);
+  border-radius: 4px;
+}
+
+.wb-ops-asset-detail-samples {
+  font-size: var(--ops-size-body-small);
+  color: var(--neon-cyan);
+  padding: 6px 8px;
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.wb-ops-close-detail-btn {
+  margin-top: 16px;
+  padding: 6px 16px;
+  font-size: var(--ops-size-body-small);
+}
+
+/* ============================================
+   RIGHT PANEL: 右栏问题闭环辅助区（流程助手）- 紧凑+强反馈
+   ============================================ */
+.wb-ops-step-indicator-compact {
+  padding: 8px;
+  background: var(--dark-300);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wb-ops-problem-status-compact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wb-ops-problem-status-label {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.wb-ops-problem-status-value {
+  font-size: var(--ops-size-tag);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.wb-ops-problem-status-value.status-open {
+  color: var(--neon-yellow);
+  background: rgba(255, 255, 0, 0.1);
+  border: 1px solid var(--neon-yellow);
+}
+
+.wb-ops-problem-status-value.status-rejudged {
+  color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid var(--neon-purple);
+}
+
+.wb-ops-problem-status-value.status-resolved {
+  color: var(--neon-green);
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid var(--neon-green);
+}
+
+.wb-ops-step-flow-compact {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.wb-ops-step-item-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  min-width: 32px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-step-item-compact:hover {
+  background: rgba(0, 255, 255, 0.08);
+}
+
+.wb-ops-step-icon-compact {
+  font-size: var(--ops-size-body-small);
+}
+
+.wb-ops-step-label-compact {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.wb-ops-step-item-compact.step-active {
+  background: rgba(0, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px var(--neon-cyan);
+}
+
+.wb-ops-step-item-compact.step-active .wb-ops-step-icon-compact,
+.wb-ops-step-item-compact.step-active .wb-ops-step-label-compact {
+  color: var(--neon-cyan);
+}
+
+.wb-ops-step-item-compact.step-active .wb-ops-step-label-compact {
+  font-weight: 600;
+}
+
+.wb-ops-step-item-compact.step-past .wb-ops-step-icon-compact,
+.wb-ops-step-item-compact.step-past .wb-ops-step-label-compact {
+  color: var(--neon-green);
+}
+
+.wb-ops-step-arrow-compact {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  opacity: 0.3;
+}
+
+.wb-ops-step-arrow-compact.arrow-active {
+  color: var(--neon-green);
+  opacity: 0.6;
+}
+
+/* 流程助手区块 - 强反馈 */
+.wb-ops-assistant-section {
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-assistant-clickable {
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+  border-left: 2px solid transparent;
+}
+
+.wb-ops-assistant-clickable:hover {
+  background: rgba(0, 255, 255, 0.06);
+  border-left-color: rgba(0, 255, 255, 0.3);
+}
+
+.wb-ops-assistant-active {
+  background: rgba(0, 255, 255, 0.1) !important;
+  border-left: 2px solid var(--neon-cyan) !important;
+}
+
+.wb-ops-assistant-active .wb-ops-assistant-number {
+  background: var(--neon-cyan);
+  color: var(--dark-100);
+  border-color: var(--neon-cyan);
+}
+
+.wb-ops-assistant-active .wb-ops-assistant-title {
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-ops-assistant-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.wb-ops-assistant-number {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark-400);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 50%;
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-assistant-title {
+  flex: 1;
+  font-size: var(--ops-size-body-small);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.wb-ops-assistant-ai-badge {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-purple);
+  padding: 1px 4px;
+  background: rgba(191, 0, 255, 0.1);
+  border: 1px solid rgba(191, 0, 255, 0.3);
+  border-radius: 4px;
+}
+
+.wb-ops-assistant-content {
+  padding-left: 22px;
+}
+
+.wb-ops-assistant-hint {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* 折叠区 */
+.wb-ops-assistant-collapsible {
+  border-bottom: none;
+}
+
+.wb-ops-collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: var(--dark-400);
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-collapsible-header:hover {
+  background: var(--dark-500);
+}
+
+.wb-ops-collapsible-icon {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-ops-collapsible-title {
+  flex: 1;
+  font-size: var(--ops-size-body-small);
+  color: var(--text-secondary);
+}
+
+.wb-ops-collapsible-count {
+  font-size: var(--ops-size-tag);
+  color: var(--neon-cyan);
+  padding: 2px 6px;
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.wb-ops-collapsible-content {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  background: var(--dark-300);
+}
+
+.wb-ops-collapsible-content.wb-ops-collapsed {
+  display: none;
+}
+
+/* 已尝试动作列表（紧凑版）- V13: 添加块内滚动 */
+.wb-ops-tried-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 160px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.wb-ops-tried-item-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  background: var(--dark-400);
+  border-radius: 4px;
+}
+
+.wb-ops-tried-action-compact {
+  font-size: var(--ops-size-tag);
+  color: var(--text-secondary);
+}
+
+.wb-ops-tried-result-compact {
+  font-size: var(--ops-size-tag);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.wb-ops-tried-result-compact.result-failed {
+  color: var(--neon-red);
+  background: rgba(255, 0, 80, 0.1);
+}
+
+.wb-ops-tried-result-compact.result-partial {
+  color: var(--neon-yellow);
+  background: rgba(255, 255, 0, 0.1);
+}
+
+.wb-ops-tried-result-compact.result-pending {
+  color: var(--neon-cyan);
+  background: rgba(0, 255, 255, 0.1);
+}
+
+/* AI Skill（紧凑版）- 强选中反馈 */
+.wb-ops-skill-section {
+  background: rgba(191, 0, 255, 0.05);
+}
+
+.wb-ops-skill-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.wb-ops-skill-btn-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 4px;
+  background: var(--dark-400);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--anim-fast) ease;
+}
+
+.wb-ops-skill-btn-compact:hover {
+  border-color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.1);
+}
+
+.wb-ops-skill-btn-selected {
+  border-color: var(--neon-purple);
+  background: rgba(191, 0, 255, 0.2) !important;
+  box-shadow: inset 0 0 0 1px var(--neon-purple), 0 0 8px rgba(191, 0, 255, 0.3);
+}
+
+.wb-ops-skill-btn-selected .wb-ops-skill-icon-compact {
+  transform: scale(1.1);
+}
+
+.wb-ops-skill-btn-selected .wb-ops-skill-label-compact {
+  color: var(--neon-purple);
+  font-weight: 600;
+}
+
+.wb-ops-skill-icon-compact {
+  font-size: var(--size-body-large);
+  transition: transform var(--anim-fast) ease;
+}
+
+.wb-ops-skill-label-compact {
+  font-size: var(--ops-size-tag);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* FOOTER - V12: 最小化 */
+.wb-ops-footer {
+  height: var(--ops-footer-height);
+  padding: 1px 8px;
+  background: var(--dark-200);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.wb-ops-footer-note {
+  font-family: var(--font-tech);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.wb-ops-mock-list {
+  display: none;
+}
+
+.wb-ops-mock-note {
+  font-size: var(--ops-size-tag);
+  color: var(--text-muted);
+  padding: 4px 8px;
+  background: rgba(255, 255, 0, 0.05);
+  border: 1px dashed rgba(255, 255, 0, 0.3);
+  border-radius: 4px;
+  text-align: center;
+  margin-top: 8px;
+}

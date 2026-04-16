@@ -1,0 +1,199 @@
+/* ============================================
+   Cyber Effects - Scanner, Grid, Animations
+   ============================================ */
+
+/* === Scanner Lines Overlay === */
+.cyber-workbench-root::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,255,255,0.03) 2px,
+    rgba(0,255,255,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanMove 8s linear infinite;
+}
+
+@keyframes scanMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* === Grid Background === */
+.cyber-workbench-root::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* === Title Text Shift Animation === */
+@keyframes textShift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.cyber-title-animated {
+  background: linear-gradient(
+    90deg,
+    var(--neon-cyan),
+    var(--neon-magenta),
+    var(--neon-cyan)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShift 3s linear infinite;
+}
+
+/* === Dot Pulse Animation === */
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.cyber-status-dot {
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+/* === Stat Card Scan Animation === */
+@keyframes statScan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.cyber-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(0,255,255,0.08),
+    transparent
+  );
+  animation: statScan 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* === Button Sweep Animation === */
+@keyframes btnSweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.cyber-btn-primary::before,
+.cyber-btn-danger::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  animation: btnSweep 3s ease-in-out infinite;
+}
+
+/* === Header Pulse Animation === */
+@keyframes headerPulse {
+  0%, 100% { width: 180px; opacity: 1; }
+  50% { width: 300px; opacity: 0.7; }
+}
+
+/* === Card Hover Glow === */
+.cyber-card:hover {
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-card.selected {
+  box-shadow: var(--glow-green);
+  border-left: 3px solid var(--neon-green);
+}
+
+/* === Queue Item Active === */
+.queue-item.active {
+  border-left: 2px solid var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+/* === Stage Content Transitions === */
+.stage-content {
+  transition: opacity var(--anim-normal) ease, visibility var(--anim-normal) ease;
+}
+
+.stage-content:not(.active) {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.stage-content.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* === Progress Bar Animation === */
+@keyframes progressPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.progress-bar-fill {
+  animation: progressPulse 2s ease-in-out infinite;
+}
+
+/* === AI Processing Degraded Style === */
+.stage-ai-processing {
+  opacity: 0.6;
+  filter: saturate(0.7);
+}
+
+/* === Weak/Secondary Elements === */
+.cyber-weak {
+  opacity: 0.5;
+  filter: grayscale(20%);
+}
+
+/* === Audio Progress Dragging === */
+.audio-progress-handle.dragging {
+  transform: scale(1.3);
+  box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+/* === Checkbox Checked Glow === */
+.cyber-checkbox.checked {
+  box-shadow: var(--glow-green);
+}
+
+/* === Tag Glow by Type === */
+.cyber-tag[data-type="product"] { box-shadow: 0 0 5px rgba(0,255,136,0.3); }
+.cyber-tag[data-type="price"] { box-shadow: 0 0 5px rgba(255,255,0,0.3); }
+.cyber-tag[data-type="need"] { box-shadow: 0 0 5px rgba(0,255,255,0.3); }
+.cyber-tag[data-type="negative"] { box-shadow: 0 0 5px rgba(255,0,102,0.3); }

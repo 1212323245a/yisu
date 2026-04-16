@@ -1,0 +1,1634 @@
+/* ============================================
+   Workbench 2 - Review Chain Styles
+   阶段级独立模板版 v5 - REVIEW-FIX-011/012/013
+   ============================================
+
+   核心修复：
+   1. REVIEW-FIX-011: 中间主块改成真正 content-first
+      - 移除 height: 100% 固定视口壳子
+      - 中间区主要内容块按内容自然长
+   2. REVIEW-FIX-012: 右侧主块改成真正 content-first
+      - 移除 height: 100% 固定视口壳子
+      - 右侧卡片按文本自然长
+   3. REVIEW-FIX-013: transcript 真实自动增高
+      - 使用 CSS field-sizing: content（现代浏览器）
+      - JS auto-resize 降级方案（旧浏览器）
+      - 第一段文字顶部/首字不再被吃掉
+      - 每个 transcript 文本框都能随内容自动增高
+   ============================================ */
+
+/* === Review Workbench Private Layout Tokens === */
+.wb-review-container {
+  /* Layout - Private to Review */
+  --review-left-panel-width: 280px;
+  --review-right-panel-width: 360px;
+  --review-top-bar-height: 64px;
+  --review-stage-switcher-height: 40px;
+
+  /* Typography - Private to Review */
+  --review-size-title-workbench: 22px;
+  --review-size-title-section: 18px;
+  --review-size-title-card: 16px;
+  --review-size-body-normal: 14px;
+  --review-size-body-small: 13px;
+  --review-size-tag: 12px;
+
+  /* Spacing - Private to Review */
+  --review-spacing-xs: 6px;
+  --review-spacing-sm: 10px;
+  --review-spacing-md: 16px;
+  --review-spacing-lg: 24px;
+  --review-spacing-xl: 32px;
+
+  /* Colors - Local aliases for readability */
+  --review-bg-main: #0a0e14;
+  --review-bg-panel: #0f1419;
+  --review-bg-card: #141920;
+  --review-bg-input: #1a222c;
+}
+
+/* === Main Container === */
+.wb-review-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--review-bg-main);
+  overflow: hidden;
+}
+
+/* === Top Bar === */
+.wb-review-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--review-top-bar-height);
+  padding: 0 var(--review-spacing-lg);
+  background: linear-gradient(180deg, #141920 0%, #0f1419 100%);
+  border-bottom: 1px solid var(--border-cyan);
+  flex-shrink: 0;
+}
+
+.wb-review-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-lg);
+}
+
+.wb-review-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-workbench);
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+}
+
+.wb-review-stage-chain {
+  display: flex;
+  gap: var(--review-spacing-sm);
+  align-items: center;
+}
+
+.wb-review-stage-chain-item {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-review-stage-chain-item:hover {
+  background: rgba(0,255,255,0.08);
+  color: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+}
+
+.wb-review-stage-chain-item.active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  background: rgba(0,255,255,0.12);
+}
+
+.wb-review-stage-chain-arrow {
+  color: var(--text-muted);
+  font-size: var(--review-size-tag);
+}
+
+.wb-review-top-bar-right {
+  display: flex;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-control-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wb-review-control-btn:hover {
+  background: rgba(0,255,255,0.1);
+}
+
+.wb-review-monitor-btn {
+  border-color: var(--border-purple);
+  color: var(--neon-purple);
+  position: relative;
+}
+
+.wb-review-monitor-btn:hover {
+  background: rgba(191,0,255,0.15);
+}
+
+.wb-review-monitor-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 2px 4px;
+  background: var(--neon-red);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 9px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  animation: badgePulse 2s ease infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ============================================
+   MAIN LAYOUT - REVIEW-FIX-011/012: 边线落底 + content-first
+   ============================================ */
+.wb-review-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto; /* 主容器可滚动，内部面板按内容自然长 */
+}
+
+.wb-review-stage-content-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  /* REVIEW-FIX-011/012: 移除 overflow: hidden，让内容可见 */
+  overflow-y: visible;
+}
+
+/* ============================================
+   STAGE CONTENT - 阶段级独立三栏布局
+   REVIEW-FIX-011/012: 移除固定视口壳子，改为 content-first
+   ============================================ */
+.wb-review-stage-content {
+  display: grid;
+  grid-template-columns: var(--review-left-panel-width) 1fr var(--review-right-panel-width);
+  /* REVIEW-FIX-011/012: 移除 grid-template-rows: 1fr 固定约束 */
+  grid-template-rows: min-content;
+  flex: 1;
+  min-height: 0;
+  /* REVIEW-FIX-011/012: 移除 height: 100% 和 overflow: hidden 固定视口壳子 */
+  height: auto;
+  overflow-y: auto; /* 整体可滚动，但中间和右侧内容按自然高度 */
+}
+
+/* ============================================
+   LEFT PANEL - 待处理队列
+   REVIEW-FIX-011/012: 左侧保持可滚动，但高度自然
+   ============================================ */
+.wb-review-left-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--review-bg-panel);
+  border-right: 1px solid var(--border-cyan);
+  /* REVIEW-FIX-011/012: 左侧保持可滚动，但移除固定高度壳子 */
+  height: auto;
+  min-height: min-content;
+  overflow-y: visible;
+}
+
+.wb-review-left-panel-header {
+  padding: var(--review-spacing-md);
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-section);
+  font-weight: 600;
+  color: var(--neon-cyan);
+  border-bottom: 1px solid var(--border-cyan);
+  background: linear-gradient(180deg, #141920 0%, rgba(0,0,0,0.1));
+  flex-shrink: 0;
+}
+
+.queue-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--review-spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+}
+
+.queue-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-card);
+  border: 1px solid rgba(0,255,255,0.1);
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.queue-item:hover {
+  border-color: rgba(0,255,255,0.25);
+  border-left-color: var(--neon-cyan);
+  background: #1a222c;
+  transform: translateX(2px);
+}
+
+.queue-item.active {
+  border-left-color: var(--neon-green);
+  border-color: rgba(0,255,136,0.35);
+  background: rgba(0,255,136,0.08);
+}
+
+.queue-item-title {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-normal);
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.queue-item-status {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--text-muted);
+}
+
+/* ============================================
+   CENTER PANEL - REVIEW-FIX-011: 真正 content-first
+   关键：主要内容块按内容自然长，非固定高度
+   ============================================ */
+.wb-review-center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-md);
+  padding: var(--review-spacing-lg);
+  background: var(--review-bg-main);
+  /* REVIEW-FIX-011: 移除 height: 100% 固定视口壳子 */
+  height: auto;
+  min-height: min-content;
+  overflow-y: visible; /* 按内容自然长，不需要固定视口滚动 */
+}
+
+/* 阶段特定中心面板样式 */
+.wb-review-center-panel.stage-identify-center,
+.wb-review-center-panel.stage-ai-center,
+.wb-review-center-panel.stage-confirm-center,
+.wb-review-center-panel.stage-sync-center {
+  /* 各阶段独立控制滚动行为 */
+}
+
+/* ============================================
+   RIGHT PANEL - REVIEW-FIX-012: 真正 content-first
+   回到备份基线风格，按内容自然长
+   ============================================ */
+.wb-review-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-md);
+  padding: var(--review-spacing-md);
+  background: linear-gradient(180deg, var(--review-bg-panel) 0%, var(--review-bg-main) 100%);
+  border-left: 1px solid var(--border-cyan);
+  /* REVIEW-FIX-012: 移除 height: 100% 固定视口壳子 */
+  height: auto;
+  min-height: min-content;
+  overflow-y: visible; /* 按内容自然长，只有真正超长区域才局部滚动 */
+}
+
+/* ============================================
+   CARD SYSTEM - 卡片系统
+   REVIEW-FIX-011/012: 卡片按内容自然扩张
+   ============================================ */
+.cyber-card {
+  background: var(--review-bg-card);
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 6px;
+  /* REVIEW-FIX-011/012: 允许内容自然显示 */
+  overflow: visible;
+  /* REVIEW-FIX-011/012: 卡片高度按内容自然长 */
+  height: auto;
+  min-height: min-content;
+}
+
+.cyber-card-header {
+  display: flex;
+  align-items: center;
+  padding: var(--review-spacing-sm) var(--review-spacing-md);
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-card);
+  font-weight: 600;
+  color: var(--neon-cyan);
+  background: linear-gradient(180deg, #1a222c 0%, var(--review-bg-card) 100%);
+  border-bottom: 1px solid rgba(0,255,255,0.1);
+}
+
+.cyber-card-body {
+  padding: var(--review-spacing-md);
+}
+
+/* 高优先级卡片 */
+.cyber-card.priority-high {
+  border-color: var(--neon-green);
+  border-width: 2px;
+}
+
+.cyber-card.priority-high .cyber-card-header {
+  background: linear-gradient(180deg, rgba(0,255,136,0.15) 0%, rgba(0,255,136,0.05) 100%);
+  color: var(--neon-green);
+}
+
+/* ============================================
+   STAGE SWITCHER
+   ============================================ */
+.wb-review-stage-switcher {
+  display: flex;
+  height: var(--review-stage-switcher-height);
+  background: linear-gradient(180deg, #141920 0%, #0f1419 100%);
+  border-top: 1px solid var(--border-cyan);
+  flex-shrink: 0;
+}
+
+.wb-review-stage-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--review-spacing-sm);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.wb-review-stage-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: transparent;
+}
+
+.wb-review-stage-btn:hover {
+  color: var(--text-primary);
+  background: rgba(0,255,255,0.05);
+}
+
+.wb-review-stage-btn.active {
+  color: var(--neon-cyan);
+  background: rgba(0,255,255,0.1);
+}
+
+.wb-review-stage-btn.active::after {
+  background: var(--neon-cyan);
+}
+
+/* ============================================
+   AUDIO PLAYER - 参考备份基线
+   ============================================ */
+.wb-review-audio-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-card);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.wb-review-audio-info {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+}
+
+.wb-review-audio-current-time {
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-review-audio-progress-container {
+  position: relative;
+  height: 20px;
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  cursor: pointer;
+}
+
+.wb-review-audio-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+}
+
+.wb-review-audio-progress-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.wb-review-audio-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-audio-play-btn {
+  padding: var(--review-spacing-xs) var(--review-spacing-md);
+  background: transparent;
+  border: 1px solid var(--neon-cyan);
+  border-radius: 4px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  cursor: pointer;
+}
+
+.wb-review-audio-play-btn:hover {
+  background: rgba(0,255,255,0.1);
+}
+
+/* ============================================
+   READING LOOP - 转写正文
+   REVIEW-FIX-013: 文本框真实自动增高，容器独立滚动
+   ============================================ */
+.wb-review-reading-loop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+  background: var(--review-bg-card);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  /* REVIEW-FIX-013: 移除 flex:1 和固定 max-height，让容器按内容自然长 */
+  height: auto;
+  min-height: 200px;
+  max-height: none;
+}
+
+.wb-review-loop-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--review-spacing-sm);
+  border-bottom: 1px solid rgba(0,255,255,0.1);
+  flex-shrink: 0;
+}
+
+.wb-review-loop-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-cyan);
+}
+
+.wb-review-loop-edit-hint {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  padding: 2px var(--review-spacing-xs);
+  background: rgba(0,255,136,0.1);
+  border-radius: 3px;
+  color: var(--neon-green);
+}
+
+.wb-review-loop-body {
+  /* REVIEW-FIX-013: 正文区独立滚动，但每个文本框自动增高 */
+  max-height: 400px; /* 真正超长的区域才局部滚动 */
+  overflow-y: auto;
+  padding: var(--review-spacing-sm);
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* 转写行 - REVIEW-FIX-013: 随内容自然增高 */
+.wb-review-transcript-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-xs) 0;
+  border-bottom: 1px solid rgba(0,255,255,0.05);
+  /* REVIEW-FIX-013: 确保行随内容增高 */
+  min-height: min-content;
+}
+
+.wb-review-transcript-row:hover {
+  background: rgba(0,255,255,0.03);
+}
+
+.wb-review-transcript-row.active-highlight {
+  background: rgba(0,255,136,0.15);
+  border-left: 3px solid var(--neon-green);
+}
+
+.wb-review-transcript-row.modified {
+  background: rgba(255,255,0,0.08);
+}
+
+.wb-review-transcript-time-readonly {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--neon-purple);
+  padding: 2px 6px;
+  background: rgba(191,0,255,0.15);
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wb-review-transcript-speaker-readonly {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--text-muted);
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.wb-review-transcript-speaker-readonly.sales {
+  color: var(--neon-cyan);
+}
+
+.wb-review-transcript-speaker-readonly.customer {
+  color: var(--neon-green);
+}
+
+/* REVIEW-FIX-013: transcript 真实自动增高 */
+.wb-review-transcript-text-editable {
+  flex: 1;
+  min-width: 0;
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: var(--review-bg-input);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-normal);
+  line-height: 1.6;
+  resize: none;
+  /* REVIEW-FIX-013: 移除固定 min-height，使用 field-sizing 让内容决定高度 */
+  min-height: 36px;
+  overflow-y: hidden; /* 隐藏滚动条，高度自动撑开 */
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+/* REVIEW-FIX-013: 现代浏览器使用 field-sizing 实现真实自动增高 */
+@supports (field-sizing: content) {
+  .wb-review-transcript-text-editable {
+    field-sizing: content;
+  }
+}
+
+.wb-review-transcript-text-editable:focus {
+  border-color: var(--neon-green);
+  background: var(--review-bg-input);
+  outline: none;
+  box-shadow: 0 0 6px rgba(0,255,136,0.3);
+}
+
+.wb-review-transcript-text-editable:hover:not(:focus) {
+  border-color: var(--border-cyan);
+}
+
+/* ============================================
+   CUSTOMER CONTEXT - 客户上下文（备份基线风格）
+   ============================================ */
+.wb-review-customer-context {
+  background: linear-gradient(135deg, rgba(0,255,255,0.05), rgba(0,255,255,0.02));
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  padding: var(--review-spacing-sm);
+}
+
+.wb-review-context-section-title {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--neon-cyan);
+  margin-bottom: var(--review-spacing-xs);
+  font-weight: 600;
+}
+
+.wb-review-context-value {
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.wb-review-context-row {
+  display: flex;
+  gap: var(--review-spacing-sm);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   SALES CARD - 销售归属
+   修复 REVIEW-PROBLEM-01/02
+   ============================================ */
+.wb-review-sales-card {
+  border-color: var(--border-cyan);
+  overflow: visible;
+}
+
+.wb-review-sales-body {
+  padding: var(--review-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-sales-current-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--review-spacing-sm);
+  background: rgba(0,255,136,0.08);
+  border: 1px solid var(--border-green);
+  border-radius: 4px;
+}
+
+.wb-review-sales-current-label {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+}
+
+.wb-review-sales-current-value {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.wb-review-sales-row {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-sales-row .field-label {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.wb-review-sales-select {
+  min-width: 120px;
+  padding: 6px 24px 6px 10px;
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-normal);
+  cursor: pointer;
+}
+
+/* ============================================
+   MANUAL IDENTIFY - 搜索并确认归属
+   修复 REVIEW-PROBLEM-01: 排在销售归属之后
+   ============================================ */
+.wb-review-attribution-card {
+  margin-top: var(--review-spacing-md);
+}
+
+.wb-review-search-section {
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-panel);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  margin-bottom: var(--review-spacing-md);
+}
+
+.wb-review-search-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-cyan);
+  margin-bottom: var(--review-spacing-sm);
+}
+
+.wb-review-search-row {
+  display: flex;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-search-input {
+  flex: 1;
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-normal);
+}
+
+.wb-review-search-results {
+  margin-top: var(--review-spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+}
+
+.wb-review-search-results.hidden {
+  display: none;
+}
+
+.wb-review-search-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-md);
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-card);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.wb-review-search-result-item:hover {
+  background: rgba(0,255,255,0.08);
+  border-color: var(--border-cyan);
+}
+
+.wb-review-attribution-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-attribution-option {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-panel);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.wb-review-attribution-option:hover {
+  background: rgba(0,255,255,0.08);
+  border-color: var(--neon-cyan);
+}
+
+.wb-review-attribution-option.selected {
+  background: rgba(0,255,136,0.1);
+  border-color: var(--neon-green);
+}
+
+.wb-review-attribution-actions {
+  display: flex;
+  gap: var(--review-spacing-md);
+  justify-content: center;
+  padding-top: var(--review-spacing-md);
+}
+
+/* ============================================
+   RECALCULATION PANEL - 新旧对比
+   修复 REVIEW-PROBLEM-04: 增加呼吸感
+   ============================================ */
+.wb-review-recalc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-md);
+  padding: var(--review-spacing-md);
+  background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 100%);
+  border: 1px solid var(--border-cyan);
+  border-radius: 6px;
+}
+
+.wb-review-recalc-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-sm);
+  background: rgba(0,255,255,0.05);
+  border-radius: 4px;
+}
+
+.wb-review-recalc-status {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--neon-cyan);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: rgba(0,255,255,0.1);
+  border-radius: 4px;
+}
+
+.wb-review-recalc-compare {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-recalc-compare-header {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-cyan);
+  font-weight: 600;
+  padding-bottom: var(--review-spacing-sm);
+  border-bottom: 1px solid var(--border-cyan);
+}
+
+/* 修复 REVIEW-PROBLEM-04: 使用自适应列宽，增加行间距 */
+.wb-review-recalc-row {
+  display: grid;
+  grid-template-columns: minmax(80px, auto) 1fr 30px 1fr auto;
+  gap: var(--review-spacing-md);
+  align-items: center;
+  padding: var(--review-spacing-md);
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  margin-bottom: var(--review-spacing-sm);
+}
+
+.wb-review-recalc-row:last-child {
+  margin-bottom: 0;
+}
+
+.wb-review-recalc-row.changed {
+  border-left-color: var(--neon-yellow);
+  background: rgba(255,255,0,0.05);
+}
+
+.wb-review-recalc-field {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wb-review-recalc-old {
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+  text-decoration: line-through;
+  padding: var(--review-spacing-xs);
+}
+
+.wb-review-recalc-arrow {
+  text-align: center;
+  color: var(--neon-cyan);
+  font-size: var(--review-size-body-normal);
+}
+
+.wb-review-recalc-new {
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-small);
+  color: var(--neon-green);
+  font-weight: 600;
+  padding: var(--review-spacing-xs);
+}
+
+.wb-review-recalc-confidence {
+  height: 6px;
+  background: var(--review-bg-input);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.wb-review-recalc-confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+  border-radius: 3px;
+}
+
+.wb-review-recalc-confirm {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--review-spacing-sm);
+  border-top: 1px solid var(--border-cyan);
+}
+
+/* ============================================
+   NEEDS DIMENSION - 需求维度
+   ============================================ */
+.wb-review-need-row {
+  display: grid;
+  grid-template-columns: 80px 100px 1fr 16px;
+  gap: var(--review-spacing-sm);
+  align-items: center;
+  padding: var(--review-spacing-sm);
+  border-bottom: 1px solid rgba(0,255,255,0.05);
+  cursor: pointer;
+}
+
+.wb-review-need-row:hover {
+  background: rgba(0,255,255,0.05);
+}
+
+.wb-review-need-row.selected {
+  background: rgba(0,255,136,0.1);
+  border-left: 3px solid var(--neon-green);
+}
+
+.wb-review-need-label {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-primary);
+}
+
+.wb-review-need-status {
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.wb-review-need-content {
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+  overflow: visible;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* ============================================
+   SYNC STAGE - 待同步阶段
+   修复 REVIEW-PROBLEM-03/10
+   ============================================ */
+.wb-review-freeze-card {
+  border-color: var(--neon-green);
+  border-width: 2px;
+}
+
+.wb-review-freeze-card .cyber-card-header {
+  background: linear-gradient(180deg, rgba(0,255,136,0.15) 0%, rgba(0,255,136,0.05) 100%);
+  color: var(--neon-green);
+}
+
+.wb-review-freeze-status-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-md);
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+.wb-review-freeze-status {
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-card);
+  color: var(--neon-green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-freeze-meta {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+  padding-top: var(--review-spacing-sm);
+  border-top: 1px solid rgba(0,255,255,0.1);
+}
+
+/* 修复 REVIEW-PROBLEM-10: 同步预览使用自适应列宽 */
+.wb-review-sync-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  padding: var(--review-spacing-sm);
+}
+
+.wb-review-sync-table-header {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, auto);
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-sm);
+  background: linear-gradient(180deg, rgba(0,255,136,0.1) 0%, rgba(0,255,136,0.02) 100%);
+  border-radius: 4px;
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.wb-review-sync-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, auto);
+  gap: var(--review-spacing-sm);
+  align-items: center;
+  padding: var(--review-spacing-sm);
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+}
+
+.wb-review-sync-row:hover {
+  background: rgba(0,255,136,0.05);
+}
+
+.wb-review-sync-row.changed {
+  border-left-color: var(--neon-green);
+  background: rgba(0,255,136,0.08);
+}
+
+.wb-review-sync-cell {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb-review-sync-old {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.wb-review-sync-new {
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.wb-review-sync-target {
+  color: var(--neon-cyan);
+}
+
+.wb-review-sync-hint {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+  padding: var(--review-spacing-md);
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  text-align: center;
+  margin-top: var(--review-spacing-md);
+}
+
+/* ============================================
+   AI PROCESSING STAGE
+   ============================================ */
+.wb-review-ai-context-card {
+  border-color: var(--border-purple);
+}
+
+.wb-review-ai-context-card .cyber-card-header {
+  background: linear-gradient(180deg, rgba(191,0,255,0.15) 0%, rgba(191,0,255,0.05) 100%);
+  color: var(--neon-purple);
+}
+
+.wb-review-ai-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-sm);
+  background: rgba(191,0,255,0.08);
+  border-radius: 4px;
+  margin-bottom: var(--review-spacing-sm);
+}
+
+.wb-review-ai-item-name {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+.wb-review-ai-item-meta {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+}
+
+.wb-review-ai-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-ai-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: rgba(191,0,255,0.15);
+  border: 1px solid var(--neon-purple);
+  border-radius: 4px;
+  color: var(--neon-purple);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  font-weight: 600;
+}
+
+.wb-review-ai-progress-chain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+}
+
+.wb-review-ai-step {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-sm);
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.wb-review-ai-step.completed {
+  background: rgba(0,255,136,0.08);
+  border-color: var(--border-green);
+}
+
+.wb-review-ai-step.active {
+  background: rgba(191,0,255,0.12);
+  border-color: var(--neon-purple);
+}
+
+.wb-review-ai-step-num {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  border-radius: 50%;
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.wb-review-ai-step.completed .wb-review-ai-step-num {
+  background: var(--neon-green);
+  border-color: var(--neon-green);
+  color: #0a0e14;
+}
+
+.wb-review-ai-step.active .wb-review-ai-step-num {
+  background: var(--neon-purple);
+  border-color: var(--neon-purple);
+  color: var(--text-primary);
+}
+
+.wb-review-ai-step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wb-review-ai-step-name {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wb-review-ai-step.completed .wb-review-ai-step-name {
+  color: var(--neon-green);
+}
+
+.wb-review-ai-step.active .wb-review-ai-step-name {
+  color: var(--neon-purple);
+}
+
+.wb-review-ai-step-desc {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--text-muted);
+}
+
+/* ============================================
+   SUPERVISION VIEW - 今日追录音
+   ============================================ */
+.wb-review-supervision-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.wb-review-supervision-view-header {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-lg);
+  padding: var(--review-spacing-sm) var(--review-spacing-lg);
+  background: linear-gradient(180deg, #141920 0%, #0f1419 100%);
+  border-bottom: 1px solid var(--border-purple);
+  flex-shrink: 0;
+}
+
+.wb-review-back-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  cursor: pointer;
+}
+
+.wb-review-back-btn:hover {
+  background: rgba(0,255,255,0.1);
+}
+
+.wb-review-supervision-title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wb-review-supervision-main-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-section);
+  color: var(--neon-cyan);
+}
+
+.wb-review-supervision-sub-title {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--text-muted);
+}
+
+.wb-review-supervision-status-area {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-md);
+  margin-left: auto;
+}
+
+.wb-review-supervision-date {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+}
+
+.wb-review-supervision-live-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: rgba(0,255,136,0.1);
+  border: 1px solid var(--neon-green);
+  border-radius: 4px;
+  color: var(--neon-green);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+}
+
+.wb-review-live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--neon-green);
+  border-radius: 50%;
+  animation: liveDotPulse 1.5s ease infinite;
+}
+
+@keyframes liveDotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.wb-review-supervisor-panel-simple {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-lg);
+  padding: var(--review-spacing-lg);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.wb-review-supervisor-simple-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-md);
+  background: rgba(255,255,0,0.08);
+  border: 1px solid var(--border-yellow);
+  border-radius: 6px;
+}
+
+.wb-review-supervisor-simple-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-title-card);
+  color: var(--neon-yellow);
+  font-weight: 600;
+}
+
+.wb-review-supervisor-simple-subtitle {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-muted);
+}
+
+.wb-review-supervisor-simple-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-spacing-sm);
+}
+
+.wb-review-supervisor-simple-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--review-spacing-md);
+  background: var(--review-bg-card);
+  border: 1px solid rgba(0,255,255,0.15);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.wb-review-supervisor-simple-row:hover {
+  border-color: var(--neon-cyan);
+  background: #1a222c;
+  transform: translateX(2px);
+}
+
+.wb-review-supervisor-simple-name {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.wb-review-supervisor-simple-count {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--neon-yellow);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: rgba(255,255,0,0.1);
+  border-radius: 4px;
+}
+
+.wb-review-supervisor-simple-status {
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-red);
+}
+
+.wb-review-copy-btn-single {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  cursor: pointer;
+}
+
+.wb-review-copy-btn-single:hover {
+  background: rgba(0,255,255,0.1);
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.wb-review-supervisor-simple-action {
+  display: flex;
+  gap: var(--review-spacing-md);
+  justify-content: center;
+  padding-top: var(--review-spacing-lg);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.cyber-btn {
+  padding: var(--review-spacing-xs) var(--review-spacing-md);
+  background: transparent;
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--neon-cyan);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-normal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cyber-btn:hover {
+  background: rgba(0,255,255,0.1);
+}
+
+.cyber-btn-primary {
+  background: rgba(0,255,255,0.1);
+  border-color: var(--neon-cyan);
+}
+
+.cyber-btn-primary:hover {
+  background: rgba(0,255,255,0.2);
+}
+
+.cyber-btn-secondary {
+  border-color: var(--border-purple);
+  color: var(--neon-purple);
+}
+
+.cyber-btn-secondary:hover {
+  background: rgba(191,0,255,0.1);
+}
+
+.cyber-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hidden {
+  display: none !important;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+  padding: var(--review-spacing-xs) 0;
+}
+
+.field-label {
+  font-family: var(--font-tech);
+  font-size: var(--review-size-body-small);
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+
+.field-value {
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-normal);
+  color: var(--text-primary);
+}
+
+.field-editable {
+  flex: 1;
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  background: var(--review-bg-input);
+  border: 1px solid var(--border-cyan);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--review-size-body-normal);
+}
+
+.field-editable:focus {
+  border-color: var(--neon-cyan);
+  outline: none;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.queue-item.new-item {
+  animation: newItemSlideIn 0.5s ease;
+  border-left: 3px solid var(--neon-green);
+}
+
+@keyframes newItemSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.queue-item-new-tag {
+  padding: 2px var(--review-spacing-xs);
+  background: rgba(0,255,136,0.2);
+  border: 1px solid var(--neon-green);
+  border-radius: 3px;
+  color: var(--neon-green);
+  font-family: var(--font-tech);
+  font-size: 10px;
+  margin-left: var(--review-spacing-sm);
+}
+
+/* 没问提示 */
+.wb-review-no-evidence-msg {
+  padding: var(--review-spacing-md);
+  background: linear-gradient(135deg, rgba(255,0,102,0.15), rgba(255,0,102,0.05));
+  border: 2px solid var(--neon-red);
+  border-radius: 6px;
+  margin: var(--review-spacing-md);
+}
+
+.wb-review-no-evidence-header {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-sm);
+  margin-bottom: var(--review-spacing-sm);
+}
+
+.wb-review-no-evidence-title {
+  font-family: var(--font-display);
+  font-size: var(--review-size-body-normal);
+  color: var(--neon-red);
+  font-weight: 600;
+}
+
+/* 汇总行 */
+.wb-review-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-sm);
+  background: var(--review-bg-card);
+  border-top: 1px solid var(--border-cyan);
+}
+
+.wb-review-summary-item {
+  display: flex;
+  align-items: center;
+  gap: var(--review-spacing-xs);
+  padding: var(--review-spacing-xs) var(--review-spacing-sm);
+  font-family: var(--font-tech);
+  font-size: var(--review-size-tag);
+  color: var(--text-muted);
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.wb-review-summary-item:hover {
+  border-color: var(--border-cyan);
+  color: var(--neon-cyan);
+  background: rgba(0,255,255,0.05);
+}
+
+.wb-review-summary-item.active {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  background: rgba(0,255,136,0.1);
+}

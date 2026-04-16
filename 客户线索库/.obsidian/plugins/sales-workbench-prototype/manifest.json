@@ -1,0 +1,11 @@
+{
+  "id": "sales-workbench-prototype",
+  "name": "Sales Workbench",
+  "version": "0.2.0",
+  "minAppVersion": "1.5.0",
+  "description": "Native Obsidian sales workbench plugin with three independent views: Lead Screening, Review Chain, and Anomaly Operations.",
+  "author": "Claude Code",
+  "authorUrl": "",
+  "isDesktopOnly": true,
+  "css": "https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Noto+Sans+SC:wght@400;700&display=swap"
+}

@@ -1,0 +1,98 @@
+/* ============================================
+   Design Tokens - Cyberpunk Neon Theme
+   Scoped to .cyber-workbench-root
+
+   NOTE: Layout tokens have been REMOVED from this file.
+   Each workbench now maintains its own private layout variables:
+   - workbench-ops.css: --ops-* variables
+   - workbench-review.css: --review-* variables
+   - workbench-lead.css: --lead-* variables
+
+   This file now only contains:
+   - Color tokens (shared)
+   - Font family definitions (shared)
+   - Glow/border effects (shared)
+   - Animation tokens (shared)
+   ============================================ */
+
+.cyber-workbench-root {
+  /* === Neon Colors === */
+  --neon-cyan: #00ffff;
+  --neon-magenta: #ff00ff;
+  --neon-yellow: #ffff00;
+  --neon-green: #00ff88;
+  --neon-orange: #ff6600;
+  --neon-purple: #bf00ff;
+  --neon-red: #ff0066;
+  --neon-blue: #0088ff;
+
+  /* === Dark Base === */
+  --dark-100: #0d0d0d;
+  --dark-200: #1a1a2e;
+  --dark-300: #16213e;
+  --dark-400: #22222f;
+  --dark-500: #2a2a3f;
+
+  /* === Text Colors === */
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+  --text-weak: #505060;
+
+  /* === Status Colors (Unified) === */
+  --status-high: #00aa77;
+  --status-medium: #aa8800;
+  --status-low: #aa5500;
+  --status-none: #7777aa;
+
+  /* === Typography - Font Families Only ===
+     Font sizes are now private to each workbench:
+     - workbench-ops.css: --ops-size-*
+     - workbench-review.css: --review-size-*
+     - workbench-lead.css: --lead-size-*
+     ========================================= */
+  --font-display: 'Orbitron', 'Courier New', monospace;
+  --font-tech: 'Rajdhani', 'Arial', sans-serif;
+  --font-body: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+
+  /* === REMOVED: Layout Tokens ===
+     These are now private to each workbench:
+     - --left-panel-width -> --ops-left-panel-width, --review-left-panel-width
+     - --right-panel-width -> --ops-right-panel-width, --review-right-panel-width
+     - --header-height -> --ops-header-height
+     - --top-bar-height -> --review-top-bar-height
+     - --footer-height -> --ops-footer-height, --review-footer-height
+
+     This isolation prevents changes to one workbench's layout
+     from affecting other workbenches.
+     ============================= */
+
+  /* === Glow Effects === */
+  --glow-cyan: 0 0 15px rgba(0,255,255,0.4), 0 0 30px rgba(0,255,255,0.2);
+  --glow-green: 0 0 15px rgba(0,255,136,0.4), 0 0 30px rgba(0,255,136,0.2);
+  --glow-yellow: 0 0 15px rgba(255,255,0,0.4), 0 0 30px rgba(255,255,0,0.2);
+  --glow-orange: 0 0 15px rgba(255,102,0,0.4), 0 0 30px rgba(255,102,0,0.2);
+  --glow-purple: 0 0 15px rgba(191,0,255,0.4), 0 0 30px rgba(191,0,255,0.2);
+  --glow-red: 0 0 15px rgba(255,0,102,0.4), 0 0 30px rgba(255,0,102,0.2);
+  --glow-magenta: 0 0 15px rgba(255,0,255,0.4), 0 0 30px rgba(255,0,255,0.2);
+
+  /* === Border Colors === */
+  --border-cyan: rgba(0,255,255,0.3);
+  --border-green: rgba(0,255,136,0.3);
+  --border-yellow: rgba(255,255,0,0.3);
+  --border-orange: rgba(255,102,0,0.3);
+  --border-purple: rgba(191,0,255,0.3);
+
+  /* === Animation Speed === */
+  --anim-fast: 0.15s;
+  --anim-normal: 0.3s;
+  --anim-slow: 0.5s;
+
+  /* === Clip Path Shapes === */
+  --clip-corner: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  --clip-hex: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  --clip-left-corner: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+/* Font family imports handled via manifest.json css field */
+/* Fallback fonts defined above in each variable */
